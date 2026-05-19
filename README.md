@@ -90,4 +90,4 @@ submitting a pull request. All contributions must pass `devtools::check()` with
 
 ## License
 
-MIT © Your Name
+MIT © Kasim Chambulilo
