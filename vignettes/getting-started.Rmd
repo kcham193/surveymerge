@@ -1,0 +1,281 @@
+---
+title: "Getting Started with odkmerge"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with odkmerge}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse  = TRUE,
+  comment   = "#>",
+  eval      = TRUE
+)
+library(odkmerge)
+```
+
+## Introduction
+
+Open Data Kit (ODK) and KoboToolbox are the most widely-used platforms for
+mobile data collection in ecology, public health, agriculture, and humanitarian
+research. Both platforms are built on the XLSForm standard, which supports
+**repeat groups** — sections of a survey that can be filled in multiple times
+per submission. A household survey might repeat for each household member; a
+vegetation survey might repeat for each step walked in a transect.
+
+When you export your data to Excel, ODK and KoboToolbox split every repeat group
+into its own sheet. A form with one repeat produces a two-sheet workbook; a form
+with nested repeats can produce three or more sheets. Each repeat sheet links back
+to its parent via two columns: `_index` (in the parent) and `_parent_index` (in
+the repeat).
+
+Joining these sheets back together manually is repetitive, error-prone, and has
+to be redone every time you re-export your data. `odkmerge` automates the entire
+workflow. It detects the sheet structure, resolves the join keys, and returns
+flat, analysis-ready tibbles — for any ODK or KoboToolbox export, regardless of
+form complexity.
+
+The package handles three structural patterns:
+
+- **Simple**: one parent sheet + one repeat sheet.
+- **Multi-repeat**: one parent sheet + multiple sibling repeat sheets.
+- **Nested**: a repeat sheet that is itself the parent of another repeat sheet.
+
+---
+
+## Installation
+
+```{r install, eval = FALSE}
+# From GitHub (development version):
+devtools::install_github("yourusername/odkmerge")
+
+# From CRAN (once published):
+install.packages("odkmerge")
+```
+
+---
+
+## Quick Start
+
+For most users, `odk_merge()` is all you need:
+
+```{r quickstart}
+path   <- system.file("extdata", "simple_survey.xlsx", package = "odkmerge")
+master <- odk_merge(path)
+head(master)
+```
+
+One function call. One flat tibble. Ready to analyse.
+
+---
+
+## Understanding the Sheet Structure
+
+Before diving deeper, it helps to understand what an ODK export looks like.
+
+When you export from KoboToolbox or ODK Central, you get an `.xlsx` file with
+multiple sheets. The **parent sheet** (sometimes called the main or survey
+sheet) has one row per submission. Each **repeat sheet** has one row per
+repeated entry, and contains three special columns:
+
+| Column | Sheet | Meaning |
+|--------|-------|---------|
+| `_index` | every sheet | Row identifier within this sheet |
+| `_parent_index` | repeat sheets only | The `_index` value of the parent row |
+| `_parent_table_name` | repeat sheets only | The name of the parent sheet |
+
+`odkmerge` uses these columns to automatically detect and join the sheets.
+
+---
+
+## Step-by-Step Workflow
+
+For more control, you can run each step separately.
+
+### Step 1 — Read the export
+
+```{r step1}
+path   <- system.file("extdata", "simple_survey.xlsx", package = "odkmerge")
+sheets <- read_odk_export(path)
+names(sheets)
+```
+
+`read_odk_export()` returns a named list of tibbles, one per sheet. You can
+inspect any sheet directly:
+
+```{r step1b}
+dplyr::glimpse(sheets[["survey"]])
+```
+
+### Step 2 — Detect the structure
+
+```{r step2}
+structure <- detect_structure(sheets)
+print(structure)
+```
+
+`detect_structure()` tells you which sheet is the parent, which are repeats,
+and how they relate to each other.
+
+### Step 3 — Build the master dataset
+
+```{r step3}
+master <- build_master(sheets, structure = structure)
+dplyr::glimpse(master)
+```
+
+Passing the pre-computed `structure` object avoids repeating the detection step.
+
+---
+
+## Handling Multiple Repeat Groups
+
+Some forms have more than one repeat group at the same level — for example, a
+household survey that collects both household members and household assets as
+separate repeats.
+
+```{r multi}
+path   <- system.file("extdata", "multi_repeat_survey.xlsx", package = "odkmerge")
+sheets <- read_odk_export(path)
+detect_structure(sheets)
+```
+
+When there are multiple repeat sheets, `build_master()` returns a **named list
+of tibbles** — one per repeat group. Sibling repeats have different row
+granularity (members vs. assets), so forcing them into a single frame would
+not make sense.
+
+```{r multi2}
+result <- build_master(sheets)
+names(result)
+nrow(result[["members"]])
+nrow(result[["assets"]])
+```
+
+Each tibble already includes all the parent-level columns:
+
+```{r multi3}
+colnames(result[["members"]])
+```
+
+---
+
+## Nested Repeats
+
+A nested repeat is a repeat group inside another repeat group. In the example
+below, a farm can have multiple fields, and each field can have multiple
+observations — three levels deep.
+
+```{r nested}
+path   <- system.file("extdata", "nested_survey.xlsx", package = "odkmerge")
+sheets <- read_odk_export(path)
+detect_structure(sheets)
+```
+
+`build_master()` resolves the full chain recursively. The `observation` master
+will contain columns from both `field` and `farm`:
+
+```{r nested2}
+result <- build_master(sheets)
+obs    <- result[["observation"]]
+# Confirm grandparent column is present
+"farm_id" %in% colnames(obs)
+dplyr::glimpse(obs)
+```
+
+---
+
+## Selecting Parent Columns
+
+If you only want specific parent columns added to a repeat sheet — not all of
+them — use `enrich_repeat()` directly:
+
+```{r enrich}
+path   <- system.file("extdata", "simple_survey.xlsx", package = "odkmerge")
+sheets <- read_odk_export(path)
+
+enriched <- enrich_repeat(
+  sheets,
+  repeat_sheet_name = "species",
+  parent_cols       = c("plot_id", "observer", "vegetation_type")
+)
+
+colnames(enriched)
+```
+
+This is useful when the parent sheet has dozens of columns and you only need
+a few for your analysis.
+
+---
+
+## Exporting Results
+
+Once you have your flat dataset, exporting is straightforward:
+
+```{r export, eval = FALSE}
+# CSV
+write.csv(master, "vegetation_master.csv", row.names = FALSE)
+
+# Excel (single sheet)
+writexl::write_xlsx(master, "vegetation_master.xlsx")
+
+# Excel (multiple sheets — for multi-repeat results)
+result <- odk_merge(path, verbose = FALSE)
+if (is.data.frame(result)) {
+  writexl::write_xlsx(result, "master.xlsx")
+} else {
+  writexl::write_xlsx(result, "master.xlsx")  # named list -> one sheet per repeat
+}
+```
+
+---
+
+## FAQ
+
+**Q: My form has a repeat but I only see one sheet in the export — why?**
+
+Some ODK deployments only export sheets that have at least one entry. If all
+submissions skipped a repeat group, the sheet will be absent. Check that at
+least one submission has data in the repeat group, then re-export.
+
+---
+
+**Q: `odk_merge()` returns a list instead of a single tibble — what do I do?**
+
+A list is returned when there are multiple repeat sheets. Access individual
+tibbles with `result[["sheet_name"]]`, or iterate with `purrr::map()`. Use
+`detect_structure()` first to see your form's structure.
+
+---
+
+**Q: Column names are duplicated with `_repeat` and `_parent` suffixes.**
+
+This happens when the same column name exists in both the parent and repeat
+sheet (e.g. both have a column called `date`). The suffix makes the origin
+explicit. You can change the suffix with the `suffix` argument:
+`odk_merge(path, suffix = c("_child", "_main"))`.
+
+---
+
+**Q: Can I use this with KoboToolbox API exports (CSV format)?**
+
+Currently `odkmerge` supports `.xlsx` exports only. CSV exports from KoboToolbox
+have a slightly different structure. CSV support is planned for a future version.
+
+---
+
+**Q: `_submission_*` columns are cluttering my output — how do I remove them?**
+
+They are removed by default (`drop_internal = TRUE`). If they are appearing,
+check that you are not passing `drop_internal = FALSE`. You can also remove them
+after the fact with `dplyr::select(master, -starts_with("_submission_"))`.
+
+---
+
+**Q: My form has 4 or more levels of nesting — does odkmerge handle that?**
+
+Yes. `build_master()` walks up the ancestry chain recursively, so any depth of
+nesting is supported as long as each sheet has valid `_parent_index` and
+`_parent_table_name` columns.

@@ -1,0 +1,30 @@
+Package: odkmerge
+Type: Package
+Title: Merge and Flatten ODK and KoboToolbox Repeat-Group Exports
+Version: 0.1.0
+Authors@R: person("Your Name", email = "you@email.com", role = c("aut", "cre"))
+Description: Provides tools to read, detect, enrich, and merge repeat-group
+    sheets produced by Open Data Kit (ODK) and KoboToolbox XLSForm exports.
+    Automates the joining of parent and child sheets using standard ODK index
+    columns, supports multi-level and nested repeat groups, and produces clean
+    flat datasets ready for analysis.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+Imports:
+    cli,
+    dplyr,
+    purrr,
+    readxl,
+    stats
+Suggests:
+    knitr,
+    openxlsx,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    writexl
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+URL: https://github.com/yourusername/odkmerge
+BugReports: https://github.com/yourusername/odkmerge/issues
+Config/roxygen2/version: 8.0.0
