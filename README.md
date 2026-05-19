@@ -41,7 +41,7 @@ analysis-ready tibbles — for any form, regardless of complexity.
 
 ```r
 # GitHub (development version):
-devtools::install_github("yourusername/odkmerge")
+devtools::install_github("kcham193/odkmerge")
 
 # CRAN (once published):
 install.packages("odkmerge")
