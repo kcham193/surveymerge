@@ -10,13 +10,13 @@ detect_structure(sheets)
 \item{sheets}{A named list of tibbles as returned by \code{\link[=read_odk_export]{read_odk_export()}}.}
 }
 \value{
-An object of class \code{"odk_structure"} — a list with the following
+An object of class \code{"odk_structure"} - a list with the following
 components:
 \describe{
 \item{\code{parent_sheet}}{Character. Name of the root/parent sheet.}
 \item{\code{repeat_sheets}}{Character vector of repeat sheet names. Empty
 (\code{character(0)}) if no repeats are present.}
-\item{\code{tree}}{A nested named list representing the parent→child
+\item{\code{tree}}{A nested named list representing the parent->child
 hierarchy. E.g. \code{list(survey = "species")} for a simple structure,
 or \code{list(farm = list(field = "observation"))} for nested repeats.}
 \item{\code{index_cols}}{Named list mapping every sheet name to its index

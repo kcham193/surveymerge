@@ -11,17 +11,18 @@ Provides tools to read, detect, enrich, and merge repeat-group sheets produced b
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/yourusername/odkmerge}
-  \item Report bugs at \url{https://github.com/yourusername/odkmerge/issues}
+  \item \url{https://github.com/kcham193/odkmerge}
+  \item \url{https://kcham193.github.io/odkmerge/}
+  \item Report bugs at \url{https://github.com/kcham193/odkmerge/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Your Name \email{you@email.com}
+\strong{Maintainer}: Kasim Chambulilo \email{kassimchambulilo@gmail.com}
 
 Authors:
 \itemize{
-  \item Your Name \email{you@email.com}
+  \item Kasim Chambulilo \email{kassimchambulilo@gmail.com}
 }
 
 }
