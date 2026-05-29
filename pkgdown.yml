@@ -1,0 +1,9 @@
+pandoc: 3.8.3
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  getting-started: getting-started.html
+last_built: 2026-05-29T15:10Z
+urls:
+  reference: https://kcham193.github.io/odkmerge/reference
+  article: https://kcham193.github.io/odkmerge/articles
