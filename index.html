@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">odkmerge</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,8 +65,29 @@
 </h1></div>
 <!-- badges: start -->
 
-<p><strong>Merge and flatten ODK and KoboToolbox repeat-group exports in one line of R.</strong></p>
-<p>ODK and KoboToolbox export repeat-group data as separate sheets in an <code>.xlsx</code> file. Joining them back together manually is tedious and error-prone. <code>odkmerge</code> detects the sheet structure automatically and produces flat, analysis-ready tibbles — for any form, regardless of complexity.</p>
+<p><strong>Merge and flatten ODK Central and KoboToolbox repeat-group exports in one line of R.</strong></p>
+<p>ODK Central and KoboToolbox both export repeat-group data as separate sheets in an <code>.xlsx</code> file. Joining them back together manually is tedious and error-prone. <code>odkmerge</code> detects the sheet structure automatically and produces flat, analysis-ready tibbles — for any form, regardless of complexity.</p>
+<p>Both export conventions are auto-detected:</p>
+<table class="table">
+<thead><tr>
+<th></th>
+<th>Row identifier</th>
+<th>Parent reference</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><strong>KoboToolbox</strong></td>
+<td><code>_index</code></td>
+<td><code>_parent_index</code></td>
+</tr>
+<tr>
+<td><strong>ODK Central</strong></td>
+<td><code>KEY</code></td>
+<td><code>PARENT_KEY</code></td>
+</tr>
+</tbody>
+</table>
+<p>System columns (<code>_submission_*</code> on Kobo; <code>SubmissionDate</code>, <code>SubmitterID</code>, <code>Status</code>, etc. on Central) are stripped by default so the merged data is analysis-ready.</p>
 <div class="section level2">
 <h2 id="how-it-works">How It Works<a class="anchor" aria-label="anchor" href="#how-it-works"></a>
 </h2>

@@ -1,13 +1,24 @@
 # odkmerge
 
-**Merge and flatten ODK and KoboToolbox repeat-group exports in one line
-of R.**
+**Merge and flatten ODK Central and KoboToolbox repeat-group exports in
+one line of R.**
 
-ODK and KoboToolbox export repeat-group data as separate sheets in an
-`.xlsx` file. Joining them back together manually is tedious and
-error-prone. `odkmerge` detects the sheet structure automatically and
-produces flat, analysis-ready tibbles — for any form, regardless of
-complexity.
+ODK Central and KoboToolbox both export repeat-group data as separate
+sheets in an `.xlsx` file. Joining them back together manually is
+tedious and error-prone. `odkmerge` detects the sheet structure
+automatically and produces flat, analysis-ready tibbles — for any form,
+regardless of complexity.
+
+Both export conventions are auto-detected:
+
+|                 | Row identifier | Parent reference |
+|-----------------|----------------|------------------|
+| **KoboToolbox** | `_index`       | `_parent_index`  |
+| **ODK Central** | `KEY`          | `PARENT_KEY`     |
+
+System columns (`_submission_*` on Kobo; `SubmissionDate`,
+`SubmitterID`, `Status`, etc. on Central) are stripped by default so the
+merged data is analysis-ready.
 
 ## How It Works
 

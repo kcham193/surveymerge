@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">odkmerge</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,6 +43,12 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="development version" id="odkmerge-development-version">odkmerge (development version)<a class="anchor" aria-label="anchor" href="#odkmerge-development-version"></a></h2>
+<ul><li>feat: support <strong>ODK Central</strong> exports (<code>KEY</code> / <code>PARENT_KEY</code> column conventions) alongside the existing <strong>KoboToolbox</strong> support (<code>_index</code> / <code>_parent_index</code>). Detection in <code>R/utils.R</code> now accepts both naming schemes, and <code>drop_internal = TRUE</code> strips ODK Central system columns (<code>SubmissionDate</code>, <code>SubmitterID</code>, <code>SubmitterName</code>, <code>AttachmentsPresent</code>, <code>AttachmentsExpected</code>, <code>Status</code>, <code>ReviewState</code>, <code>DeviceID</code>, <code>Edits</code>, <code>FormVersion</code>) in addition to Kobo’s <code>_submission_*</code> columns.</li>
+<li>fix: <code><a href="../reference/enrich_repeat.html">enrich_repeat()</a></code> no longer hard-codes <code>_index</code> for the parent join key. It now resolves the parent’s index column via <code>.odk_index_col()</code>, so it works against either format.</li>
+<li>New fixture: <code>inst/extdata/simple_survey_central.xlsx</code>. New test file: <code>tests/testthat/test-central-format.R</code>.</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="odkmerge-010">odkmerge 0.1.0<a class="anchor" aria-label="anchor" href="#odkmerge-010"></a></h2>
 <ul><li>Initial release.</li>
 <li>
@@ -58,7 +64,8 @@
 <li>Bundled fixture exports in <code>inst/extdata/</code>: <code>simple_survey.xlsx</code>, <code>multi_repeat_survey.xlsx</code>, <code>nested_survey.xlsx</code>.</li>
 <li>Getting-started vignette covering all three structural patterns.</li>
 </ul></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
