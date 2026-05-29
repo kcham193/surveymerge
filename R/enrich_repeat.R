@@ -124,7 +124,7 @@ enrich_repeat <- function(sheets,
     "Enriched {.val {repeat_sheet_name}}: \\
      {nrow(enriched)} row{?s}, \\
      {cols_added} column{?s} added from {.val {parent_name}} \\
-     (join key: {.val {pidx_col}} \u2194 _index)."
+     (join key: {.val {pidx_col}} \u2194 {.val {parent_index_col}})."
   )
 
   enriched
