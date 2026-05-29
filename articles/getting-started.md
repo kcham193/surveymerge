@@ -303,7 +303,7 @@ enriched <- enrich_repeat(
   repeat_sheet_name = "species",
   parent_cols       = c("plot_id", "observer", "vegetation_type")
 )
-#> ℹ Enriched "species": 40 rows, 3 columns added from "survey" (join key: "_parent_index" ↔ _index).
+#> ℹ Enriched "species": 40 rows, 3 columns added from "survey" (join key: "_parent_index" ↔ "_index").
 
 colnames(enriched)
 #> [1] "_index"             "_parent_index"      "_parent_table_name"

@@ -60,7 +60,7 @@ sheets <- read_odk_export(path)
 #> ✔ Read 2 sheets from /home/runner/work/_temp/Library/odkmerge/extdata/simple_survey.xlsx: "survey" and "species".
 enriched <- enrich_repeat(sheets, repeat_sheet_name = "species",
                            parent_cols = c("plot_id", "observer"))
-#> ℹ Enriched "species": 40 rows, 2 columns added from "survey" (join key: "_parent_index" ↔ _index).
+#> ℹ Enriched "species": 40 rows, 2 columns added from "survey" (join key: "_parent_index" ↔ "_index").
 colnames(enriched)
 #> [1] "_index"             "_parent_index"      "_parent_table_name"
 #> [4] "species_name"       "cover_pct"          "height_m"          
