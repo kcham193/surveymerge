@@ -1,46 +1,56 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file. -->
+
 # odkmerge
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/yourusername/odkmerge/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/yourusername/odkmerge/actions/workflows/R-CMD-check.yaml)
-[![CRAN status](https://www.r-pkg.org/badges/version/odkmerge)](https://CRAN.R-project.org/package=odkmerge)
-[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html#maturing)
-[![Codecov](https://codecov.io/gh/yourusername/odkmerge/branch/main/graph/badge.svg)](https://app.codecov.io/gh/yourusername/odkmerge)
+
+[![R-CMD-check](https://github.com/kcham193/odkmerge/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/kcham193/odkmerge/actions/workflows/R-CMD-check.yaml)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/odkmerge)](https://CRAN.R-project.org/package=odkmerge)
+[![Lifecycle:
+maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://lifecycle.r-lib.org/articles/stages.html#maturing)
+[![Codecov test
+coverage](https://codecov.io/gh/kcham193/odkmerge/branch/master/graph/badge.svg)](https://app.codecov.io/gh/kcham193/odkmerge?branch=master)
+[![License:
+MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
 
-**Merge and flatten ODK and KoboToolbox repeat-group exports in one line of R.**
+**Merge and flatten ODK and KoboToolbox repeat-group exports in one line
+of R.**
 
-ODK and KoboToolbox export repeat-group data as separate sheets in an `.xlsx`
-file. Joining them back together manually is tedious and error-prone.
-`odkmerge` detects the sheet structure automatically and produces flat,
-analysis-ready tibbles — for any form, regardless of complexity.
+ODK and KoboToolbox export repeat-group data as separate sheets in an
+`.xlsx` file. Joining them back together manually is tedious and
+error-prone. `odkmerge` detects the sheet structure automatically and
+produces flat, analysis-ready tibbles — for any form, regardless of
+complexity.
 
 ## How It Works
 
-```
-┌─────────────────────┐     ┌─────────────────────┐
-│   survey (parent)   │     │   species (repeat)   │
-│  _index │ plot_id   │     │ _index│_parent_index │
-│    1    │  P01      │     │   1   │      1       │
-│    2    │  P02      │     │   2   │      1       │
-│   ...   │  ...      │     │   3   │      2       │
-└─────────────────────┘     └─────────────────────┘
-            │                          │
-            └──────── odkmerge ────────┘
-                          │
-                          ▼
-        ┌──────────────────────────────────────┐
-        │         master dataset               │
-        │ _parent_index │ plot_id │ species    │
-        │      1        │  P01    │ Acacia     │
-        │      1        │  P01    │ Combretum  │
-        │      2        │  P02    │ Themeda    │
-        └──────────────────────────────────────┘
-```
+    ┌─────────────────────┐     ┌─────────────────────┐
+    │   survey (parent)   │     │   species (repeat)   │
+    │  _index │ plot_id   │     │ _index│_parent_index │
+    │    1    │  P01      │     │   1   │      1       │
+    │    2    │  P02      │     │   2   │      1       │
+    │   ...   │  ...      │     │   3   │      2       │
+    └─────────────────────┘     └─────────────────────┘
+                │                          │
+                └──────── odkmerge ────────┘
+                              │
+                              ▼
+            ┌──────────────────────────────────────┐
+            │         master dataset               │
+            │ _parent_index │ plot_id │ species    │
+            │      1        │  P01    │ Acacia     │
+            │      1        │  P01    │ Combretum  │
+            │      2        │  P02    │ Themeda    │
+            └──────────────────────────────────────┘
 
 ## Installation
 
-```r
+``` r
 # GitHub (development version):
+# install.packages("devtools")
 devtools::install_github("kcham193/odkmerge")
 
 # CRAN (once published):
@@ -49,20 +59,31 @@ install.packages("odkmerge")
 
 ## Quick Example
 
-```r
+``` r
 library(odkmerge)
 
 path   <- system.file("extdata", "simple_survey.xlsx", package = "odkmerge")
-master <- odk_merge(path)
+master <- odk_merge(path, verbose = FALSE)
 head(master)
+#> # A tibble: 6 × 11
+#>   `_index` `_parent_index` `_parent_table_name` species_name cover_pct height_m
+#>      <dbl>           <dbl> <chr>                <chr>            <dbl>    <dbl>
+#> 1        1               1 survey               Combretum         42.9     0.2 
+#> 2        2               1 survey               Combretum         58.7     2.84
+#> 3        3               1 survey               Panicum           21.5     2.4 
+#> 4        4               1 survey               Acacia            61.9     0.72
+#> 5        5               2 survey               Panicum           30.5     0.71
+#> 6        6               2 survey               Themeda           12.7     1.58
+#> # ℹ 5 more variables: plot_id <chr>, observer <chr>, survey_date <chr>,
+#> #   vegetation_type <chr>, `_uuid` <chr>
 ```
 
-For multi-repeat or nested forms, `odk_merge()` returns a named list of tibbles
-— one per repeat group.
+For multi-repeat or nested forms, `odk_merge()` returns a named list of
+tibbles — one per repeat group.
 
 ## Step-by-step control
 
-```r
+``` r
 # 1. Read all sheets
 sheets <- read_odk_export("my_kobo_export.xlsx")
 
@@ -74,19 +95,29 @@ master <- build_master(sheets)
 
 # 4. Or enrich just one repeat sheet with selected parent columns
 enriched <- enrich_repeat(sheets, "members",
-                           parent_cols = c("hh_id", "village"))
+                          parent_cols = c("hh_id", "village"))
 ```
 
 ## Learn More
 
-See the [Getting Started vignette](vignettes/getting-started.Rmd) for full
-documentation including multi-repeat and nested repeat examples.
+See the [Getting Started
+vignette](https://kcham193.github.io/odkmerge/articles/getting-started.html)
+for full documentation including multi-repeat and nested repeat
+examples.
+
+## Code of Conduct
+
+Please note that the `odkmerge` project is released with a [Contributor
+Code of
+Conduct](https://github.com/kcham193/odkmerge/blob/master/.github/CODE_OF_CONDUCT.md).
+By contributing to this project, you agree to abide by its terms.
 
 ## Contributing
 
-Contributions are welcome! Please open an issue to discuss your idea before
-submitting a pull request. All contributions must pass `devtools::check()` with
-0 errors, 0 warnings, and 0 notes.
+Contributions are welcome! See
+[CONTRIBUTING.md](https://github.com/kcham193/odkmerge/blob/master/.github/CONTRIBUTING.md)
+for guidelines. All contributions must pass `devtools::check()` with 0
+errors, 0 warnings, and 0 notes.
 
 ## License
 
