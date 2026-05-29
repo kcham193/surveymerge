@@ -7,6 +7,24 @@
 #                    `_submission_*` columns.
 #   * ODK Central  : `KEY`, `PARENT_KEY`, plus submission/metadata columns
 #                    like `SubmitterID`, `SubmissionDate`, `Status`, ...
+#
+# Provenance of the ODK Central column names
+# -------------------------------------------
+# The literal header strings (`KEY`, `PARENT_KEY`, `SubmissionDate`,
+# `SubmitterID`, `SubmitterName`, `AttachmentsPresent`,
+# `AttachmentsExpected`, `Status`, `ReviewState`, `DeviceID`, `Edits`,
+# `FormVersion`) are taken directly from ODK Central's Briefcase-style
+# CSV/XLSX exporter:
+#
+#   https://github.com/getodk/central-backend/blob/master/lib/data/briefcase.js
+#
+# Each of those names is `header.push('...')`-ed in that file. The
+# row-identifier column is `KEY`, the parent-reference column in a
+# repeat sheet is `PARENT_KEY`, and the 10 system columns above are
+# the per-submission metadata that Central appends to the root sheet.
+# Note: ODK Central does NOT emit `instanceID` / `meta-instanceID` as
+# column headers -- the submission UUID is encoded as the value of the
+# `KEY` column itself.
 
 # ---------------------------------------------------------------------------
 # Constants: known system column names for each format
