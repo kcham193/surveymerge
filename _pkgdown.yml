@@ -1,0 +1,40 @@
+url: https://kcham193.github.io/odkmerge/
+
+template:
+  bootstrap: 5
+  bslib:
+    primary: "#2C3E50"
+
+reference:
+  - title: "Main entry point"
+    desc: "The one-call wrapper for most users."
+    contents:
+      - odk_merge
+
+  - title: "Step-by-step workflow"
+    desc: "Use these when you need finer control."
+    contents:
+      - read_odk_export
+      - detect_structure
+      - build_master
+      - enrich_repeat
+
+  - title: "Package overview"
+    contents:
+      - odkmerge-package
+
+articles:
+  - title: Getting Started
+    navbar: ~
+    contents:
+      - getting-started
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [search, github]
+
+news:
+  releases:
+  - text: "Version 0.1.0"
+    href: https://github.com/kcham193/odkmerge/releases/tag/v0.1.0

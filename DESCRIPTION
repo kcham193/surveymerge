@@ -21,10 +21,12 @@ Suggests:
     knitr,
     openxlsx,
     rmarkdown,
+    spelling,
     testthat (>= 3.0.0),
     writexl
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-URL: https://github.com/kcham193/odkmerge
+URL: https://github.com/kcham193/odkmerge, https://kcham193.github.io/odkmerge/
 BugReports: https://github.com/kcham193/odkmerge/issues
+Language: en-US
 Config/roxygen2/version: 8.0.0

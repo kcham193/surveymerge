@@ -1,0 +1,12 @@
+linters: linters_with_defaults(
+    line_length_linter      = line_length_linter(100L),
+    object_name_linter      = NULL,
+    cyclocomp_linter        = NULL,
+    commented_code_linter   = NULL,
+    indentation_linter      = NULL
+  )
+encoding: "UTF-8"
+exclusions: list(
+    "tests/testthat.R",
+    "data-raw"
+  )

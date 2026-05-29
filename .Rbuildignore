@@ -3,5 +3,13 @@
 ^\.github$
 ^LICENSE\.md$
 ^README\.Rmd$
+^README\.html$
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^cran-comments\.md$
+^_pkgdown\.yml$
+^pkgdown$
+^docs$
+^codecov\.yml$
+^\.lintr$
+^CRAN-SUBMISSION$
