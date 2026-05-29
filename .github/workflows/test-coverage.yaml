@@ -39,7 +39,10 @@ jobs:
 
       - uses: codecov/codecov-action@v4
         with:
-          fail_ci_if_error: ${{ github.event_name != 'pull_request' && true || false }}
+          # Soft-fail until the repo is connected to Codecov.
+          # Flip to `true` once you've signed in at codecov.io and added the repo
+          # (and, for private repos, set CODECOV_TOKEN in Settings -> Secrets).
+          fail_ci_if_error: false
           files: ./cobertura.xml
           plugins: noop
           disable_search: true

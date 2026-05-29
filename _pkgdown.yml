@@ -16,6 +16,7 @@ reference:
     contents:
       - read_odk_export
       - detect_structure
+      - print.odk_structure
       - build_master
       - enrich_repeat
 
