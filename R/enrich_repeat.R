@@ -72,13 +72,16 @@ enrich_repeat <- function(sheets,
   parent_name    <- structure_info$direct_parent[[repeat_sheet_name]]
   parent_df      <- sheets[[parent_name]]
 
+  # Resolve the parent's index column (Kobo: `_index`, Central: `KEY`)
+  parent_index_col <- .odk_index_col(parent_df)
+
   # --- select parent columns ------------------------------------------------
   if (is.null(parent_cols)) {
-    # All non-submission columns from the parent (excluding _index which is
-    # used only as the join key)
-    parent_cols <- colnames(parent_df)[
-      !grepl("^_submission_", colnames(parent_df))
-    ]
+    # All non-submission columns from the parent
+    parent_cols <- setdiff(
+      colnames(.drop_submission_cols(parent_df)),
+      character(0)
+    )
   } else {
     missing_cols <- setdiff(parent_cols, colnames(parent_df))
     if (length(missing_cols) > 0L) {
@@ -89,17 +92,17 @@ enrich_repeat <- function(sheets,
       ))
       parent_cols <- intersect(parent_cols, colnames(parent_df))
     }
-    # Always include _index for the join
-    parent_cols <- union("_index", parent_cols)
   }
 
-  # Ensure _index is present for join key
-  parent_cols <- union("_index", parent_cols)
+  # Ensure the parent's index column is included for the join key
+  parent_cols <- union(parent_index_col, parent_cols)
 
   parent_slim <- parent_df[, parent_cols, drop = FALSE]
 
-  # Rename _index in parent to avoid collision with repeat's own _index
-  colnames(parent_slim)[colnames(parent_slim) == "_index"] <- ".join_key_"
+  # Rename the parent's index column to a temp key to avoid collision
+  # with the repeat sheet's own index column (which may have the same name
+  # in Kobo's `_index` vs `_index` situation).
+  colnames(parent_slim)[colnames(parent_slim) == parent_index_col] <- ".join_key_"
 
   # --- optionally drop submission cols from repeat --------------------------
   if (drop_internal) repeat_df <- .drop_submission_cols(repeat_df)

@@ -1,7 +1,7 @@
 Package: odkmerge
 Type: Package
 Title: Merge and Flatten ODK and KoboToolbox Repeat-Group Exports
-Version: 0.1.0
+Version: 0.1.0.9000
 Authors@R: person("Kasim", "Chambulilo", email = "kassimchambulilo@gmail.com", role = c("aut", "cre"))
 Description: Provides tools to read, detect, enrich, and merge repeat-group
     sheets produced by Open Data Kit (ODK) and KoboToolbox XLSForm exports.

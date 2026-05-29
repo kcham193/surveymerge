@@ -1,8 +1,16 @@
 analysable
 analyses
+AttachmentsExpected
+AttachmentsPresent
+DeviceID
+FormVersion
 KoboToolbox
 ODK
 odkmerge
+ReviewState
+SubmissionDate
+SubmitterID
+SubmitterName
 tibble
 tibbles
 XLSForm

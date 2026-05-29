@@ -1,3 +1,19 @@
+# odkmerge (development version)
+
+* feat: support **ODK Central** exports (`KEY` / `PARENT_KEY` column
+  conventions) alongside the existing **KoboToolbox** support
+  (`_index` / `_parent_index`). Detection in `R/utils.R` now accepts
+  both naming schemes, and `drop_internal = TRUE` strips ODK Central
+  system columns (`SubmissionDate`, `SubmitterID`, `SubmitterName`,
+  `AttachmentsPresent`, `AttachmentsExpected`, `Status`, `ReviewState`,
+  `DeviceID`, `Edits`, `FormVersion`) in addition to Kobo's
+  `_submission_*` columns.
+* fix: `enrich_repeat()` no longer hard-codes `_index` for the parent
+  join key. It now resolves the parent's index column via
+  `.odk_index_col()`, so it works against either format.
+* New fixture: `inst/extdata/simple_survey_central.xlsx`. New test file:
+  `tests/testthat/test-central-format.R`.
+
 # odkmerge 0.1.0
 
 * Initial release.

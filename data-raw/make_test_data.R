@@ -165,4 +165,56 @@ writeData(wb3, "observation", observation)
 saveWorkbook(wb3, file.path(out_dir, "nested_survey.xlsx"), overwrite = TRUE)
 message("nested_survey.xlsx written")
 
+
+# ---------------------------------------------------------------------------
+# 4. simple_survey_central.xlsx  (ODK Central format — KEY / PARENT_KEY)
+# ---------------------------------------------------------------------------
+# This mirrors `simple_survey.xlsx` (1 parent + 1 repeat) but uses the
+# ODK Central column convention so that `odkmerge` can be tested against
+# real Central exports.
+set.seed(43)
+
+central_survey <- data.frame(
+  KEY              = paste0("uuid:", rand_uuid(10)),
+  plot_id          = sprintf("P%02d", 1:10),
+  observer         = sample(c("Alice", "Bob", "Carol"), 10, replace = TRUE),
+  survey_date      = as.Date("2024-01-01") + (0:9) * 3,
+  vegetation_type  = sample(c("savanna", "forest", "wetland"), 10,
+                            replace = TRUE),
+  SubmissionDate   = as.POSIXct("2024-01-01 08:00:00") + (0:9) * 3600,
+  SubmitterID      = sample(c(101L, 102L, 103L), 10, replace = TRUE),
+  SubmitterName    = sample(c("alice", "bob", "carol"), 10, replace = TRUE),
+  Status           = "approved",
+  ReviewState      = "approved",
+  DeviceID         = "collect:v2026.1.0",
+  FormVersion      = "1",
+  AttachmentsExpected = 0L,
+  AttachmentsPresent  = 0L,
+  check.names      = FALSE,
+  stringsAsFactors = FALSE
+)
+
+# ~4 species rows per parent. PARENT_KEY references the parent's KEY directly.
+central_parent_idx <- rep(seq_len(nrow(central_survey)), each = 4)
+central_species <- data.frame(
+  KEY          = paste0("uuid:", rand_uuid(length(central_parent_idx))),
+  PARENT_KEY   = central_survey$KEY[central_parent_idx],
+  species_name = sample(c("Acacia", "Combretum", "Themeda", "Panicum",
+                          "Setaria", "Digitaria"),
+                        length(central_parent_idx), replace = TRUE),
+  cover_pct    = round(runif(length(central_parent_idx), 5, 80), 1),
+  height_m     = round(runif(length(central_parent_idx), 0.1, 4.0), 2),
+  check.names      = FALSE,
+  stringsAsFactors = FALSE
+)
+
+wb4 <- createWorkbook()
+addWorksheet(wb4, "survey")
+addWorksheet(wb4, "species")
+writeData(wb4, "survey",  central_survey)
+writeData(wb4, "species", central_species)
+saveWorkbook(wb4, file.path(out_dir, "simple_survey_central.xlsx"),
+             overwrite = TRUE)
+message("simple_survey_central.xlsx written")
+
 message("\nAll test fixtures created in ", out_dir)
