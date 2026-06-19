@@ -1,15 +1,23 @@
-# odkmerge
+# surveymerge
 
-**Merge and flatten ODK Central and KoboToolbox repeat-group exports in
-one line of R.**
+**Navigate survey relationships. Build analysis-ready datasets.**
 
-ODK Central and KoboToolbox both export repeat-group data as separate
-sheets in an `.xlsx` file. Joining them back together manually is
-tedious and error-prone. `odkmerge` detects the sheet structure
-automatically and produces flat, analysis-ready tibbles — for any form,
-regardless of complexity.
+`surveymerge` is an R package for working with relational survey exports
+that contain repeat groups and nested repeat groups, as produced by
+XLSForm-based platforms such as **ODK Central** and **KoboToolbox**.
 
-Both export conventions are auto-detected:
+Rather than reflexively flattening every sheet into one wide table, it
+helps you:
+
+- Inspect the parent-child structure of an export.
+- Identify the **units of analysis** that exist in your survey
+  (household, individual, visit, observation, event, …).
+- Build analysis-ready datasets *at the appropriate unit of analysis*,
+  with parent context joined in only where it makes statistical sense.
+- Preserve the relational structure when you need it; collapse it when
+  you don’t.
+
+Both major export conventions are auto-detected:
 
 |                 | Row identifier | Parent reference |
 |-----------------|----------------|------------------|
@@ -18,24 +26,62 @@ Both export conventions are auto-detected:
 
 System columns (`_submission_*` on Kobo; `SubmissionDate`,
 `SubmitterID`, `Status`, etc. on Central) are stripped by default so the
-merged data is analysis-ready.
+resulting dataset is analysis-ready.
 
-## How It Works
+## Understanding units of analysis
+
+A survey export usually carries data at more than one level. Consider a
+household survey with two repeats:
+
+``` R
+┌────────────────────────────┐
+│        household           │   <- 1 row per household
+│  hh_id  village  ...       │      (parent sheet)
+└──────────┬─────────────────┘
+           │
+           ├───────────────────┐
+           │                   │
+┌──────────▼──────────┐  ┌─────▼──────────┐
+│       members       │  │     assets      │   <- 1 row per member /
+│ member_name age ... │  │ asset_type ...  │      1 row per asset
+└─────────────────────┘  └─────────────────┘      (repeat sheets)
+```
+
+That export has **three legitimate units of analysis**:
+
+| Unit of analysis | Where it lives | Example questions |
+|----|----|----|
+| Household | `household` sheet | What fraction of households own livestock? |
+| Individual / member | `members` sheet (+ selected hh columns) | What is the age distribution of members? |
+| Asset / event | `assets` sheet (+ selected hh columns) | Which asset types are most common? |
+
+Flattening all three into a single table would inflate household counts
+(a household with five members would be counted five times), distort
+ratios, and turn parent-level variables into pseudo-repeated measures.
+`surveymerge` deliberately keeps the grains separate so you can pick the
+one that matches your question.
+
+## How it works
+
+For each repeat sheet in your export,
+[`survey_merge()`](https://kcham193.github.io/surveymerge/reference/survey_merge.md)
+walks up the parent chain and produces a tibble at *that repeat’s*
+grain, with ancestor columns attached:
 
 ``` R
 ┌─────────────────────┐     ┌─────────────────────┐
-│   survey (parent)   │     │   species (repeat)   │
-│  _index │ plot_id   │     │ _index│_parent_index │
-│    1    │  P01      │     │   1   │      1       │
-│    2    │  P02      │     │   2   │      1       │
-│   ...   │  ...      │     │   3   │      2       │
+│   survey (parent)   │     │   species (repeat)  │
+│  _index │ plot_id   │     │ _index│_parent_index│
+│    1    │  P01      │     │   1   │      1      │
+│    2    │  P02      │     │   2   │      1      │
+│   ...   │  ...      │     │   3   │      2      │
 └─────────────────────┘     └─────────────────────┘
             │                          │
-            └──────── odkmerge ────────┘
+            └────── surveymerge ───────┘
                           │
                           ▼
         ┌──────────────────────────────────────┐
-        │         master dataset               │
+        │   dataset at the SPECIES grain       │
         │ _parent_index │ plot_id │ species    │
         │      1        │  P01    │ Acacia     │
         │      1        │  P01    │ Combretum  │
@@ -43,26 +89,28 @@ merged data is analysis-ready.
         └──────────────────────────────────────┘
 ```
 
+One row per repeat record, with parent context joined in.
+
 ## Installation
 
 ``` r
 
 # GitHub (development version):
 # install.packages("devtools")
-devtools::install_github("kcham193/odkmerge")
+devtools::install_github("kcham193/surveymerge")
 
 # CRAN (once published):
-install.packages("odkmerge")
+install.packages("surveymerge")
 ```
 
-## Quick Example
+## Quick example
 
 ``` r
 
-library(odkmerge)
+library(surveymerge)
 
-path   <- system.file("extdata", "simple_survey.xlsx", package = "odkmerge")
-master <- odk_merge(path, verbose = FALSE)
+path   <- system.file("extdata", "simple_survey.xlsx", package = "surveymerge")
+master <- survey_merge(path, verbose = FALSE)
 head(master)
 #> # A tibble: 6 × 11
 #>   `_index` `_parent_index` `_parent_table_name` species_name cover_pct height_m
@@ -78,85 +126,132 @@ head(master)
 ```
 
 For multi-repeat or nested forms,
-[`odk_merge()`](https://kcham193.github.io/odkmerge/reference/odk_merge.md)
-returns a named list of tibbles — one per repeat group.
+[`survey_merge()`](https://kcham193.github.io/surveymerge/reference/survey_merge.md)
+returns a *named list* of tibbles - one per repeat group - because
+sibling repeats live at different grains and shouldn’t be silently
+stacked together.
 
 ## Step-by-step control
 
 ``` r
 
-# 1. Read all sheets
-sheets <- read_odk_export("my_kobo_export.xlsx")
+# 1. Read all sheets (preserves relational structure)
+sheets <- read_survey_export("my_export.xlsx")
 
-# 2. Inspect the structure
+# 2. Inspect the structure to see which units of analysis exist
 detect_structure(sheets)
 
-# 3. Build the flat master
+# 3. Build a dataset at a repeat grain
 master <- build_master(sheets)
 
-# 4. Or enrich just one repeat sheet with selected parent columns
+# 4. Or attach only the parent columns you actually need
 enriched <- enrich_repeat(sheets, "members",
                           parent_cols = c("hh_id", "village"))
 ```
 
-## Learn More
+## Migration from `odkmerge`
+
+If you used the previous `odkmerge` 0.1.0 release, your scripts still
+work:
+[`odk_merge()`](https://kcham193.github.io/surveymerge/reference/odk_merge.md)
+and
+[`read_odk_export()`](https://kcham193.github.io/surveymerge/reference/read_odk_export.md)
+are kept as deprecated aliases that forward to the new names. Update
+them at your own pace:
+
+| Old (deprecated) | New |
+|----|----|
+| [`odk_merge()`](https://kcham193.github.io/surveymerge/reference/odk_merge.md) | [`survey_merge()`](https://kcham193.github.io/surveymerge/reference/survey_merge.md) |
+| [`read_odk_export()`](https://kcham193.github.io/surveymerge/reference/read_odk_export.md) | [`read_survey_export()`](https://kcham193.github.io/surveymerge/reference/read_survey_export.md) |
+| class `odk_structure` | class `survey_structure` |
+
+## Learn more
 
 See the [Getting Started
-vignette](https://kcham193.github.io/odkmerge/articles/getting-started.html)
-for full documentation including multi-repeat and nested repeat
-examples.
+vignette](https://kcham193.github.io/surveymerge/articles/getting-started.html)
+for a deeper walkthrough, including multi-repeat and nested examples and
+a longer discussion of units of analysis.
 
 ## Code of Conduct
 
-Please note that the `odkmerge` project is released with a [Contributor
-Code of
-Conduct](https://github.com/kcham193/odkmerge/blob/master/.github/CODE_OF_CONDUCT.md).
+Please note that the `surveymerge` project is released with a
+[Contributor Code of
+Conduct](https://github.com/kcham193/surveymerge/blob/master/.github/CODE_OF_CONDUCT.md).
 By contributing to this project, you agree to abide by its terms.
 
 ## Contributing
 
 Contributions are welcome! See
-[CONTRIBUTING.md](https://github.com/kcham193/odkmerge/blob/master/.github/CONTRIBUTING.md)
+[CONTRIBUTING.md](https://github.com/kcham193/surveymerge/blob/master/.github/CONTRIBUTING.md)
 for guidelines. All contributions must pass `devtools::check()` with 0
 errors, 0 warnings, and 0 notes.
 
 ## License
 
-MIT © Kasim Chambulilo
+MIT (c) Kasim Chambulilo
 
 # Package index
 
 ## Main entry point
 
-The one-call wrapper for most users.
+A one-call wrapper that reads an export, detects its parent-child
+structure, and assembles datasets at the unit of analysis implied by
+each repeat group.
 
-- [`odk_merge()`](https://kcham193.github.io/odkmerge/reference/odk_merge.md)
-  : Merge an ODK or KoboToolbox export into a flat dataset
+- [`survey_merge()`](https://kcham193.github.io/surveymerge/reference/survey_merge.md)
+  : Read and assemble analysis-ready datasets from a survey export
 
 ## Step-by-step workflow
 
-Use these when you need finer control.
+Use these when you need finer control over how repeat groups are joined
+and which columns are carried across.
 
-- [`read_odk_export()`](https://kcham193.github.io/odkmerge/reference/read_odk_export.md)
-  : Read an ODK or KoboToolbox Excel export
-- [`detect_structure()`](https://kcham193.github.io/odkmerge/reference/detect_structure.md)
-  : Detect the parent-child sheet structure of an ODK export
-- [`print(`*`<odk_structure>`*`)`](https://kcham193.github.io/odkmerge/reference/print.odk_structure.md)
-  : Print an odk_structure object
-- [`build_master()`](https://kcham193.github.io/odkmerge/reference/build_master.md)
-  : Build a flat master dataset from ODK repeat-group sheets
-- [`enrich_repeat()`](https://kcham193.github.io/odkmerge/reference/enrich_repeat.md)
-  : Enrich a repeat sheet with columns from its parent sheet
+- [`read_survey_export()`](https://kcham193.github.io/surveymerge/reference/read_survey_export.md)
+  :
+
+  Read a relational survey export (XLSForm `.xlsx`)
+
+- [`detect_structure()`](https://kcham193.github.io/surveymerge/reference/detect_structure.md)
+  : Detect the parent-child sheet structure of a survey export
+
+- [`print(`*`<survey_structure>`*`)`](https://kcham193.github.io/surveymerge/reference/print.survey_structure.md)
+  : Print a survey_structure object
+
+- [`build_master()`](https://kcham193.github.io/surveymerge/reference/build_master.md)
+  : Build analysis-ready datasets from repeat-group sheets
+
+- [`enrich_repeat()`](https://kcham193.github.io/surveymerge/reference/enrich_repeat.md)
+  : Enrich a repeat sheet with selected columns from its parent
+
+## Deprecated
+
+Older names retained from the previous `odkmerge` release. They still
+work but emit a deprecation warning on first use.
+
+- [`odk_merge()`](https://kcham193.github.io/surveymerge/reference/odk_merge.md)
+  :
+
+  Merge a survey export (deprecated; use
+  [`survey_merge()`](https://kcham193.github.io/surveymerge/reference/survey_merge.md))
+
+- [`read_odk_export()`](https://kcham193.github.io/surveymerge/reference/read_odk_export.md)
+  :
+
+  Read a survey export (deprecated; use
+  [`read_survey_export()`](https://kcham193.github.io/surveymerge/reference/read_survey_export.md))
+
+- [`print(`*`<odk_structure>`*`)`](https://kcham193.github.io/surveymerge/reference/print.odk_structure.md)
+  : Print an odk_structure object (deprecated)
 
 ## Package overview
 
-- [`odkmerge`](https://kcham193.github.io/odkmerge/reference/odkmerge-package.md)
-  [`odkmerge-package`](https://kcham193.github.io/odkmerge/reference/odkmerge-package.md)
-  : odkmerge: Merge and Flatten ODK and KoboToolbox Repeat-Group Exports
+- [`surveymerge`](https://kcham193.github.io/surveymerge/reference/surveymerge-package.md)
+  [`surveymerge-package`](https://kcham193.github.io/surveymerge/reference/surveymerge-package.md)
+  : surveymerge: work with relational survey exports and repeat groups
 
 # Articles
 
 ### Getting Started
 
 - [Getting Started with
-  odkmerge](https://kcham193.github.io/odkmerge/articles/getting-started.md):
+  surveymerge](https://kcham193.github.io/surveymerge/articles/getting-started.md):

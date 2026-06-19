@@ -5,14 +5,16 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Merge and Flatten ODK and KoboToolbox Repeat-Group Exports • odkmerge</title>
+<title>surveymerge • surveymerge</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Merge and Flatten ODK and KoboToolbox Repeat-Group Exports">
-<meta name="description" content="Provides tools to read, detect, enrich, and merge repeat-group sheets produced by Open Data Kit (ODK) and KoboToolbox XLSForm exports. Automates the joining of parent and child sheets using standard ODK index columns, supports multi-level and nested repeat groups, and produces clean flat datasets ready for analysis.">
-<meta property="og:description" content="Provides tools to read, detect, enrich, and merge repeat-group sheets produced by Open Data Kit (ODK) and KoboToolbox XLSForm exports. Automates the joining of parent and child sheets using standard ODK index columns, supports multi-level and nested repeat groups, and produces clean flat datasets ready for analysis.">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="surveymerge">
+<meta name="description" content="Navigate survey relationships. Build analysis-ready datasets from repeat groups and nested repeat groups in XLSForm-based survey exports (ODK Central, KoboToolbox).
+">
+<meta property="og:description" content="Navigate survey relationships. Build analysis-ready datasets from repeat groups and nested repeat groups in XLSForm-based survey exports (ODK Central, KoboToolbox).
+">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -20,9 +22,9 @@
 
     <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="index.html">odkmerge</a>
+    <a class="navbar-brand me-2" href="index.html">surveymerge</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,14 +37,14 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/getting-started.html">Getting Started with odkmerge</a></li>
+<li><a class="dropdown-item" href="articles/getting-started.html">Getting Started with surveymerge</a></li>
   </ul>
 </li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-news" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">News</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-news">
 <li><h6 class="dropdown-header" data-toc-skip>Releases</h6></li>
-    <li><a class="external-link dropdown-item" href="https://github.com/kcham193/odkmerge/releases/tag/v0.1.0">Version 0.1.0</a></li>
+    <li><a class="external-link dropdown-item" href="https://github.com/kcham193/surveymerge/releases/tag/v0.2.0">Version 0.2.0</a></li>
     <li><hr class="dropdown-divider"></li>
     <li><a class="dropdown-item" href="news/index.html">Changelog</a></li>
   </ul>
@@ -52,7 +54,7 @@
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/kcham193/odkmerge/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/kcham193/surveymerge/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -61,13 +63,20 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="odkmerge">odkmerge<a class="anchor" aria-label="anchor" href="#odkmerge"></a>
+<div class="page-header"><h1 id="surveymerge">surveymerge<a class="anchor" aria-label="anchor" href="#surveymerge"></a>
 </h1></div>
 <!-- badges: start -->
 
-<p><strong>Merge and flatten ODK Central and KoboToolbox repeat-group exports in one line of R.</strong></p>
-<p>ODK Central and KoboToolbox both export repeat-group data as separate sheets in an <code>.xlsx</code> file. Joining them back together manually is tedious and error-prone. <code>odkmerge</code> detects the sheet structure automatically and produces flat, analysis-ready tibbles — for any form, regardless of complexity.</p>
-<p>Both export conventions are auto-detected:</p>
+<p><strong>Navigate survey relationships. Build analysis-ready datasets.</strong></p>
+<p><code>surveymerge</code> is an R package for working with relational survey exports that contain repeat groups and nested repeat groups, as produced by XLSForm-based platforms such as <strong>ODK Central</strong> and <strong>KoboToolbox</strong>.</p>
+<p>Rather than reflexively flattening every sheet into one wide table, it helps you:</p>
+<ul>
+<li>Inspect the parent-child structure of an export.</li>
+<li>Identify the <strong>units of analysis</strong> that exist in your survey (household, individual, visit, observation, event, …).</li>
+<li>Build analysis-ready datasets <em>at the appropriate unit of analysis</em>, with parent context joined in only where it makes statistical sense.</li>
+<li>Preserve the relational structure when you need it; collapse it when you don’t.</li>
+</ul>
+<p>Both major export conventions are auto-detected:</p>
 <table class="table">
 <thead><tr>
 <th></th>
@@ -87,48 +96,100 @@
 </tr>
 </tbody>
 </table>
-<p>System columns (<code>_submission_*</code> on Kobo; <code>SubmissionDate</code>, <code>SubmitterID</code>, <code>Status</code>, etc. on Central) are stripped by default so the merged data is analysis-ready.</p>
+<p>System columns (<code>_submission_*</code> on Kobo; <code>SubmissionDate</code>, <code>SubmitterID</code>, <code>Status</code>, etc. on Central) are stripped by default so the resulting dataset is analysis-ready.</p>
 <div class="section level2">
-<h2 id="how-it-works">How It Works<a class="anchor" aria-label="anchor" href="#how-it-works"></a>
+<h2 id="understanding-units-of-analysis">Understanding units of analysis<a class="anchor" aria-label="anchor" href="#understanding-units-of-analysis"></a>
 </h2>
-<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>┌─────────────────────┐     ┌─────────────────────┐</span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>│   <span class="fu">survey</span> (parent)   │     │   <span class="fu">species</span> (<span class="cf">repeat</span>)   │</span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>│  _index │ plot_id   │     │ _index│_parent_index │</span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>│    <span class="dv">1</span>    │  P01      │     │   <span class="dv">1</span>   │      <span class="dv">1</span>       │</span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>│    <span class="dv">2</span>    │  P02      │     │   <span class="dv">2</span>   │      <span class="dv">1</span>       │</span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>│   ...   │  ...      │     │   <span class="dv">3</span>   │      <span class="dv">2</span>       │</span>
-<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>└─────────────────────┘     └─────────────────────┘</span>
-<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>            │                          │</span>
-<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>            └──────── odkmerge ────────┘</span>
-<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>                          │</span>
-<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>                          ▼</span>
-<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>        ┌──────────────────────────────────────┐</span>
-<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>        │         master dataset               │</span>
-<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>        │ _parent_index │ plot_id │ species    │</span>
-<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>        │      <span class="dv">1</span>        │  P01    │ Acacia     │</span>
-<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>        │      <span class="dv">1</span>        │  P01    │ Combretum  │</span>
-<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>        │      <span class="dv">2</span>        │  P02    │ Themeda    │</span>
-<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>        └──────────────────────────────────────┘</span></code></pre></div>
+<p>A survey export usually carries data at more than one level. Consider a household survey with two repeats:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>┌────────────────────────────┐</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>│        household           │   <span class="ot">&lt;-</span> <span class="dv">1</span> row per household</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>│  hh_id  village  ...       │      (parent sheet)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>└──────────┬─────────────────┘</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a>           │</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a>           ├───────────────────┐</span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a>           │                   │</span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a>┌──────────▼──────────┐  ┌─────▼──────────┐</span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a>│       members       │  │     assets      │   <span class="ot">&lt;-</span> <span class="dv">1</span> row per member <span class="sc">/</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a>│ member_name age ... │  │ asset_type ...  │      <span class="dv">1</span> row per asset</span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a>└─────────────────────┘  └─────────────────┘      (<span class="cf">repeat</span> sheets)</span></code></pre></div>
+<p>That export has <strong>three legitimate units of analysis</strong>:</p>
+<table class="table">
+<colgroup>
+<col width="19%">
+<col width="38%">
+<col width="41%">
+</colgroup>
+<thead><tr>
+<th>Unit of analysis</th>
+<th>Where it lives</th>
+<th>Example questions</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>Household</td>
+<td>
+<code>household</code> sheet</td>
+<td>What fraction of households own livestock?</td>
+</tr>
+<tr>
+<td>Individual / member</td>
+<td>
+<code>members</code> sheet (+ selected hh columns)</td>
+<td>What is the age distribution of members?</td>
+</tr>
+<tr>
+<td>Asset / event</td>
+<td>
+<code>assets</code> sheet (+ selected hh columns)</td>
+<td>Which asset types are most common?</td>
+</tr>
+</tbody>
+</table>
+<p>Flattening all three into a single table would inflate household counts (a household with five members would be counted five times), distort ratios, and turn parent-level variables into pseudo-repeated measures. <code>surveymerge</code> deliberately keeps the grains separate so you can pick the one that matches your question.</p>
+</div>
+<div class="section level2">
+<h2 id="how-it-works">How it works<a class="anchor" aria-label="anchor" href="#how-it-works"></a>
+</h2>
+<p>For each repeat sheet in your export, <code><a href="reference/survey_merge.html">survey_merge()</a></code> walks up the parent chain and produces a tibble at <em>that repeat’s</em> grain, with ancestor columns attached:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>┌─────────────────────┐     ┌─────────────────────┐</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>│   <span class="fu">survey</span> (parent)   │     │   <span class="fu">species</span> (<span class="cf">repeat</span>)  │</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>│  _index │ plot_id   │     │ _index│_parent_index│</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a>│    <span class="dv">1</span>    │  P01      │     │   <span class="dv">1</span>   │      <span class="dv">1</span>      │</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a>│    <span class="dv">2</span>    │  P02      │     │   <span class="dv">2</span>   │      <span class="dv">1</span>      │</span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>│   ...   │  ...      │     │   <span class="dv">3</span>   │      <span class="dv">2</span>      │</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>└─────────────────────┘     └─────────────────────┘</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a>            │                          │</span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a>            └────── surveymerge ───────┘</span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>                          │</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>                          ▼</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>        ┌──────────────────────────────────────┐</span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>        │   dataset at the SPECIES grain       │</span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>        │ _parent_index │ plot_id │ species    │</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>        │      <span class="dv">1</span>        │  P01    │ Acacia     │</span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>        │      <span class="dv">1</span>        │  P01    │ Combretum  │</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>        │      <span class="dv">2</span>        │  P02    │ Themeda    │</span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>        └──────────────────────────────────────┘</span></code></pre></div>
+<p>One row per repeat record, with parent context joined in.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># GitHub (development version):</span></span>
 <span><span class="co"># install.packages("devtools")</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"kcham193/odkmerge"</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"kcham193/surveymerge"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># CRAN (once published):</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"odkmerge"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"surveymerge"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="quick-example">Quick Example<a class="anchor" aria-label="anchor" href="#quick-example"></a>
+<h2 id="quick-example">Quick example<a class="anchor" aria-label="anchor" href="#quick-example"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/kcham193/odkmerge" class="external-link">odkmerge</a></span><span class="op">)</span></span>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/kcham193/surveymerge" class="external-link">surveymerge</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">path</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"simple_survey.xlsx"</span>, package <span class="op">=</span> <span class="st">"odkmerge"</span><span class="op">)</span></span>
-<span><span class="va">master</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/odk_merge.html">odk_merge</a></span><span class="op">(</span><span class="va">path</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">path</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"simple_survey.xlsx"</span>, package <span class="op">=</span> <span class="st">"surveymerge"</span><span class="op">)</span></span>
+<span><span class="va">master</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/survey_merge.html">survey_merge</a></span><span class="op">(</span><span class="va">path</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">master</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 6 × 11</span></span>
 <span><span class="co">#&gt;   `_index` `_parent_index` `_parent_table_name` species_name cover_pct height_m</span></span>
@@ -141,51 +202,79 @@
 <span><span class="co">#&gt; 6        6               2 survey               Themeda           12.7     1.58</span></span>
 <span><span class="co">#&gt; # ℹ 5 more variables: plot_id &lt;chr&gt;, observer &lt;chr&gt;, survey_date &lt;chr&gt;,</span></span>
 <span><span class="co">#&gt; #   vegetation_type &lt;chr&gt;, `_uuid` &lt;chr&gt;</span></span></code></pre></div>
-<p>For multi-repeat or nested forms, <code><a href="reference/odk_merge.html">odk_merge()</a></code> returns a named list of tibbles — one per repeat group.</p>
+<p>For multi-repeat or nested forms, <code><a href="reference/survey_merge.html">survey_merge()</a></code> returns a <em>named list</em> of tibbles - one per repeat group - because sibling repeats live at different grains and shouldn’t be silently stacked together.</p>
 </div>
 <div class="section level2">
 <h2 id="step-by-step-control">Step-by-step control<a class="anchor" aria-label="anchor" href="#step-by-step-control"></a>
 </h2>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># 1. Read all sheets</span></span>
-<span><span class="va">sheets</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_odk_export.html">read_odk_export</a></span><span class="op">(</span><span class="st">"my_kobo_export.xlsx"</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># 1. Read all sheets (preserves relational structure)</span></span>
+<span><span class="va">sheets</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/read_survey_export.html">read_survey_export</a></span><span class="op">(</span><span class="st">"my_export.xlsx"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># 2. Inspect the structure</span></span>
+<span><span class="co"># 2. Inspect the structure to see which units of analysis exist</span></span>
 <span><span class="fu"><a href="reference/detect_structure.html">detect_structure</a></span><span class="op">(</span><span class="va">sheets</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># 3. Build the flat master</span></span>
+<span><span class="co"># 3. Build a dataset at a repeat grain</span></span>
 <span><span class="va">master</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/build_master.html">build_master</a></span><span class="op">(</span><span class="va">sheets</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># 4. Or enrich just one repeat sheet with selected parent columns</span></span>
+<span><span class="co"># 4. Or attach only the parent columns you actually need</span></span>
 <span><span class="va">enriched</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/enrich_repeat.html">enrich_repeat</a></span><span class="op">(</span><span class="va">sheets</span>, <span class="st">"members"</span>,</span>
 <span>                          parent_cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hh_id"</span>, <span class="st">"village"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="learn-more">Learn More<a class="anchor" aria-label="anchor" href="#learn-more"></a>
+<h2 id="migration-from-odkmerge">Migration from <code>odkmerge</code>
+<a class="anchor" aria-label="anchor" href="#migration-from-odkmerge"></a>
 </h2>
-<p>See the <a href="https://kcham193.github.io/odkmerge/articles/getting-started.html">Getting Started vignette</a> for full documentation including multi-repeat and nested repeat examples.</p>
+<p>If you used the previous <code>odkmerge</code> 0.1.0 release, your scripts still work: <code><a href="reference/odk_merge.html">odk_merge()</a></code> and <code><a href="reference/read_odk_export.html">read_odk_export()</a></code> are kept as deprecated aliases that forward to the new names. Update them at your own pace:</p>
+<table class="table">
+<thead><tr>
+<th>Old (deprecated)</th>
+<th>New</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code><a href="reference/odk_merge.html">odk_merge()</a></code></td>
+<td><code><a href="reference/survey_merge.html">survey_merge()</a></code></td>
+</tr>
+<tr>
+<td><code><a href="reference/read_odk_export.html">read_odk_export()</a></code></td>
+<td><code><a href="reference/read_survey_export.html">read_survey_export()</a></code></td>
+</tr>
+<tr>
+<td>class <code>odk_structure</code>
+</td>
+<td>class <code>survey_structure</code>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section level2">
+<h2 id="learn-more">Learn more<a class="anchor" aria-label="anchor" href="#learn-more"></a>
+</h2>
+<p>See the <a href="https://kcham193.github.io/surveymerge/articles/getting-started.html">Getting Started vignette</a> for a deeper walkthrough, including multi-repeat and nested examples and a longer discussion of units of analysis.</p>
 </div>
 <div class="section level2">
 <h2 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>
 </h2>
-<p>Please note that the <code>odkmerge</code> project is released with a <a href="https://github.com/kcham193/odkmerge/blob/master/.github/CODE_OF_CONDUCT.md" class="external-link">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
+<p>Please note that the <code>surveymerge</code> project is released with a <a href="https://github.com/kcham193/surveymerge/blob/master/.github/CODE_OF_CONDUCT.md" class="external-link">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
 </div>
 <div class="section level2">
 <h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
 </h2>
-<p>Contributions are welcome! See <a href="https://github.com/kcham193/odkmerge/blob/master/.github/CONTRIBUTING.md" class="external-link">CONTRIBUTING.md</a> for guidelines. All contributions must pass <code>devtools::check()</code> with 0 errors, 0 warnings, and 0 notes.</p>
+<p>Contributions are welcome! See <a href="https://github.com/kcham193/surveymerge/blob/master/.github/CONTRIBUTING.md" class="external-link">CONTRIBUTING.md</a> for guidelines. All contributions must pass <code>devtools::check()</code> with 0 errors, 0 warnings, and 0 notes.</p>
 </div>
 <div class="section level2">
 <h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
 </h2>
-<p>MIT © Kasim Chambulilo</p>
+<p>MIT (c) Kasim Chambulilo</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/kcham193/odkmerge/" class="external-link">Browse source code</a></li>
-<li><a href="https://github.com/kcham193/odkmerge/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://github.com/kcham193/surveymerge/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/kcham193/surveymerge/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
@@ -208,7 +297,7 @@
 <div class="citation">
 <h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html#citation">Citing odkmerge</a></li>
+<li><a href="authors.html#citation">Citing surveymerge</a></li>
 </ul>
 </div>
 
@@ -222,10 +311,10 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/kcham193/odkmerge/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/kcham193/odkmerge/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://CRAN.R-project.org/package=odkmerge" class="external-link"><img src="https://www.r-pkg.org/badges/version/odkmerge" alt="CRAN status"></a></li>
+<li><a href="https://github.com/kcham193/surveymerge/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/kcham193/surveymerge/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://CRAN.R-project.org/package=surveymerge" class="external-link"><img src="https://www.r-pkg.org/badges/version/surveymerge" alt="CRAN status"></a></li>
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#maturing" class="external-link"><img src="https://img.shields.io/badge/lifecycle-maturing-blue.svg" alt="Lifecycle: maturing"></a></li>
-<li><a href="https://app.codecov.io/gh/kcham193/odkmerge?branch=master" class="external-link"><img src="https://codecov.io/gh/kcham193/odkmerge/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://app.codecov.io/gh/kcham193/surveymerge?branch=master" class="external-link"><img src="https://codecov.io/gh/kcham193/surveymerge/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
 <li><a href="https://opensource.org/licenses/MIT" class="external-link"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a></li>
 </ul>
 </div>

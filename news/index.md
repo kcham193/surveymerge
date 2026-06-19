@@ -1,39 +1,50 @@
 # Changelog
 
-## odkmerge (development version)
+## surveymerge 0.2.0
 
-- feat: support **ODK Central** exports (`KEY` / `PARENT_KEY` column
-  conventions) alongside the existing **KoboToolbox** support (`_index`
-  / `_parent_index`). Detection in `R/utils.R` now accepts both naming
-  schemes, and `drop_internal = TRUE` strips ODK Central system columns
-  (`SubmissionDate`, `SubmitterID`, `SubmitterName`,
-  `AttachmentsPresent`, `AttachmentsExpected`, `Status`, `ReviewState`,
-  `DeviceID`, `Edits`, `FormVersion`) in addition to Kobo’s
-  `_submission_*` columns.
-- fix:
-  [`enrich_repeat()`](https://kcham193.github.io/odkmerge/reference/enrich_repeat.md)
-  no longer hard-codes `_index` for the parent join key. It now resolves
-  the parent’s index column via `.odk_index_col()`, so it works against
-  either format.
-- New fixture: `inst/extdata/simple_survey_central.xlsx`. New test file:
-  `tests/testthat/test-central-format.R`.
+This is the rebranded and repositioned successor of `odkmerge` 0.1.0.
+The underlying join engine is unchanged; the package name, public
+function names, and documentation have been updated.
 
-## odkmerge 0.1.0
+### Breaking changes (with backward-compatible aliases)
 
-- Initial release.
-- [`odk_merge()`](https://kcham193.github.io/odkmerge/reference/odk_merge.md):
-  one-call wrapper that reads an ODK / KoboToolbox `.xlsx` export and
-  returns flat, analysis-ready tibbles.
-- [`read_odk_export()`](https://kcham193.github.io/odkmerge/reference/read_odk_export.md):
-  reads every sheet of an export as a named list of tibbles.
-- [`detect_structure()`](https://kcham193.github.io/odkmerge/reference/detect_structure.md):
-  classifies sheets as parent vs. repeat and builds the parent-\>child
-  hierarchy; returns an `odk_structure` S3 object with a `print` method.
-- [`build_master()`](https://kcham193.github.io/odkmerge/reference/build_master.md):
-  joins repeat sheets up to the root parent. Handles simple,
-  multi-repeat (sibling), and nested-repeat structures.
-- [`enrich_repeat()`](https://kcham193.github.io/odkmerge/reference/enrich_repeat.md):
-  adds selected parent columns into a single repeat sheet.
-- Bundled fixture exports in `inst/extdata/`: `simple_survey.xlsx`,
-  `multi_repeat_survey.xlsx`, `nested_survey.xlsx`.
-- Getting-started vignette covering all three structural patterns.
+- The package has been renamed from **odkmerge** to **surveymerge** to
+  avoid trademark concerns and reflect a broader positioning around
+  relational survey exports rather than ODK specifically.
+- [`odk_merge()`](https://kcham193.github.io/surveymerge/reference/odk_merge.md)
+  is now
+  [`survey_merge()`](https://kcham193.github.io/surveymerge/reference/survey_merge.md).
+  The old name still works but emits a one-time deprecation warning and
+  will be removed in a future release.
+- [`read_odk_export()`](https://kcham193.github.io/surveymerge/reference/read_odk_export.md)
+  is now
+  [`read_survey_export()`](https://kcham193.github.io/surveymerge/reference/read_survey_export.md),
+  with the same back-compatible alias and deprecation warning.
+- The S3 class on the object returned by
+  [`detect_structure()`](https://kcham193.github.io/surveymerge/reference/detect_structure.md)
+  is now `survey_structure` (the `odk_structure` class tag is also
+  attached so any user code that dispatches on the old class keeps
+  working).
+
+### Repositioning
+
+- The package is no longer described as a tool that simply *flattens*
+  every sheet into one table. The new framing in the README, vignette,
+  and function documentation emphasises that the correct output of a
+  merge depends on the intended **unit of analysis** (household,
+  individual, visit, event, etc.) and that users should pick or assemble
+  datasets accordingly.
+- A new conceptual section, *Understanding units of analysis*, has been
+  added to the README and the getting-started vignette.
+
+### No functional changes
+
+- All input/output behaviour of the join engine is preserved.
+- All existing test fixtures continue to be shipped.
+- All four functions
+  ([`survey_merge()`](https://kcham193.github.io/surveymerge/reference/survey_merge.md),
+  [`read_survey_export()`](https://kcham193.github.io/surveymerge/reference/read_survey_export.md),
+  [`detect_structure()`](https://kcham193.github.io/surveymerge/reference/detect_structure.md),
+  [`build_master()`](https://kcham193.github.io/surveymerge/reference/build_master.md),
+  [`enrich_repeat()`](https://kcham193.github.io/surveymerge/reference/enrich_repeat.md))
+  accept the same arguments and return the same shapes as in 0.1.0.

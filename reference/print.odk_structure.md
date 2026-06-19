@@ -1,6 +1,8 @@
-# Print an odk_structure object
+# Print an odk_structure object (deprecated)
 
-Print an odk_structure object
+Provided for backward compatibility with objects produced by the
+previous `odkmerge` release. Delegates to
+[`print.survey_structure()`](https://kcham193.github.io/surveymerge/reference/print.survey_structure.md).
 
 ## Usage
 
@@ -13,9 +15,13 @@ print(x, ...)
 
 - x:
 
-  An `odk_structure` object returned by
-  [`detect_structure()`](https://kcham193.github.io/odkmerge/reference/detect_structure.md).
+  An `odk_structure` object.
 
 - ...:
 
-  Ignored.
+  Passed to
+  [`print.survey_structure()`](https://kcham193.github.io/surveymerge/reference/print.survey_structure.md).
+
+## Value
+
+The input object, invisibly.

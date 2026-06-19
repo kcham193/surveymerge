@@ -1,8 +1,10 @@
-# Read an ODK or KoboToolbox Excel export
+# Read a survey export (deprecated; use `read_survey_export()`)
 
-Reads every sheet from an `.xlsx` file produced by Open Data Kit (ODK)
-or KoboToolbox and returns them as a named list of tibbles. The list is
-the entry point for all other `odkmerge` functions.
+Backward-compatible alias for
+[`read_survey_export()`](https://kcham193.github.io/surveymerge/reference/read_survey_export.md)
+retained from the previous `odkmerge` release. New code should call
+[`read_survey_export()`](https://kcham193.github.io/surveymerge/reference/read_survey_export.md)
+directly.
 
 ## Usage
 
@@ -20,7 +22,7 @@ read_odk_export(file_path, col_types = NULL, ...)
 
   A character vector passed to
   [`readxl::read_excel()`](https://readxl.tidyverse.org/reference/read_excel.html)
-  to control column type parsing. Applied identically to every sheet.
+  to control column-type parsing. Applied identically to every sheet.
   Set `NULL` (the default) to let `readxl` guess types automatically.
 
 - ...:
@@ -31,15 +33,15 @@ read_odk_export(file_path, col_types = NULL, ...)
 
 ## Value
 
-A named list of tibbles, one per sheet. Names match the sheet names in
-the source file.
+The same value as
+[`read_survey_export()`](https://kcham193.github.io/surveymerge/reference/read_survey_export.md).
 
 ## Examples
 
 ``` r
-path <- system.file("extdata", "simple_survey.xlsx", package = "odkmerge")
-sheets <- read_odk_export(path)
-#> ✔ Read 2 sheets from /home/runner/work/_temp/Library/odkmerge/extdata/simple_survey.xlsx: "survey" and "species".
-names(sheets)   # "survey" "species"
+path <- system.file("extdata", "simple_survey.xlsx", package = "surveymerge")
+suppressWarnings(sheets <- read_odk_export(path))
+#> ✔ Read 2 sheets from /home/runner/work/_temp/Library/surveymerge/extdata/simple_survey.xlsx: "survey" and "species".
+names(sheets)
 #> [1] "survey"  "species"
 ```

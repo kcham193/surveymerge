@@ -1,17 +1,12 @@
-# Merge an ODK or KoboToolbox export into a flat dataset
+# Merge a survey export (deprecated; use `survey_merge()`)
 
-The main entry point for `odkmerge`. Reads an `.xlsx` export, detects
-the repeat-group structure, and returns a flat, analysis-ready dataset —
-all in one call.
+Deprecated since surveymerge 0.2.0.
 
-Internally this function runs:
-[`read_odk_export()`](https://kcham193.github.io/odkmerge/reference/read_odk_export.md)
-→
-[`detect_structure()`](https://kcham193.github.io/odkmerge/reference/detect_structure.md)
-→
-[`build_master()`](https://kcham193.github.io/odkmerge/reference/build_master.md).
-
-For more control over any step, call those functions individually.
+Backward-compatible alias for
+[`survey_merge()`](https://kcham193.github.io/surveymerge/reference/survey_merge.md)
+retained from the previous `odkmerge` release. New code should call
+[`survey_merge()`](https://kcham193.github.io/surveymerge/reference/survey_merge.md)
+directly.
 
 ## Usage
 
@@ -31,12 +26,14 @@ odk_merge(
 - file_path:
 
   A length-1 character string giving the path to the `.xlsx` file
-  exported from ODK or KoboToolbox.
+  exported from ODK Central, KoboToolbox, or another XLSForm-based
+  survey platform.
 
 - drop_internal:
 
   Logical. If `TRUE` (the default), columns starting with `_submission_`
-  are removed from repeat sheets before merging.
+  (KoboToolbox) and ODK Central's system columns are removed before
+  merging.
 
 - col_types:
 
@@ -62,18 +59,14 @@ odk_merge(
 
 ## Value
 
-- A single tibble when the file contains exactly one repeat sheet.
-
-- A named list of tibbles when the file contains multiple repeat sheets
-  (one tibble per repeat group).
+The same value as
+[`survey_merge()`](https://kcham193.github.io/surveymerge/reference/survey_merge.md).
 
 ## Examples
 
 ``` r
-path <- system.file("extdata", "simple_survey.xlsx", package = "odkmerge")
-master <- odk_merge(path)
-#> ✔ Read 2 sheets from /home/runner/work/_temp/Library/odkmerge/extdata/simple_survey.xlsx: "survey" and "species".
-#> ✔ Built master for "species": 40 rows, 11 columns, 40 unique parent records.
+path <- system.file("extdata", "simple_survey.xlsx", package = "surveymerge")
+suppressWarnings(master <- odk_merge(path, verbose = FALSE))
 head(master)
 #> # A tibble: 6 × 11
 #>   `_index` `_parent_index` `_parent_table_name` species_name cover_pct height_m
