@@ -39,9 +39,11 @@ suppressed. Default: \code{TRUE}.}
 \item A single tibble when the file contains exactly one repeat sheet
 (one row per repeat record, with parent columns attached).
 \item A named list of tibbles when the file contains multiple repeat sheets
-- \strong{one tibble per unit of analysis}. Sibling repeats live at
+\itemize{
+\item \strong{one tibble per unit of analysis}. Sibling repeats live at
 different grains, so they are kept as separate tibbles rather than
 blindly stacked together.
+}
 }
 }
 \description{

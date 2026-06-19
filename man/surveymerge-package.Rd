@@ -4,7 +4,7 @@
 \name{surveymerge-package}
 \alias{surveymerge}
 \alias{surveymerge-package}
-\title{surveymerge: Work with Relational Survey Exports and Repeat Groups}
+\title{surveymerge: work with relational survey exports and repeat groups}
 \description{
 \code{surveymerge} helps analysts make sense of XLSForm-based survey exports
 (ODK Central, KoboToolbox, and other compatible platforms) that contain
@@ -24,6 +24,7 @@ information about the relationship.
 }
 }
 \section{Where to start}{
+
 \itemize{
 \item \code{\link[=survey_merge]{survey_merge()}} - the one-call wrapper that returns one dataset per
 repeat group, with all ancestor columns joined in.
