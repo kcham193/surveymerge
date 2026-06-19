@@ -1,5 +1,5 @@
 <!--
-Thank you for contributing to odkmerge! Please fill in the sections below.
+Thank you for contributing to surveymerge! Please fill in the sections below.
 Delete any that don't apply.
 -->
 

@@ -1,28 +1,49 @@
-url: https://kcham193.github.io/odkmerge/
+url: https://kcham193.github.io/surveymerge/
 
 template:
   bootstrap: 5
   bslib:
     primary: "#2C3E50"
 
+home:
+  title: surveymerge
+  description: >
+    Navigate survey relationships. Build analysis-ready datasets from
+    repeat groups and nested repeat groups in XLSForm-based survey
+    exports (ODK Central, KoboToolbox).
+
 reference:
   - title: "Main entry point"
-    desc: "The one-call wrapper for most users."
+    desc: >
+      A one-call wrapper that reads an export, detects its parent-child
+      structure, and assembles datasets at the unit of analysis implied
+      by each repeat group.
     contents:
-      - odk_merge
+      - survey_merge
 
   - title: "Step-by-step workflow"
-    desc: "Use these when you need finer control."
+    desc: >
+      Use these when you need finer control over how repeat groups are
+      joined and which columns are carried across.
     contents:
-      - read_odk_export
+      - read_survey_export
       - detect_structure
-      - print.odk_structure
+      - print.survey_structure
       - build_master
       - enrich_repeat
 
+  - title: "Deprecated"
+    desc: >
+      Older names retained from the previous `odkmerge` release. They
+      still work but emit a deprecation warning on first use.
+    contents:
+      - odk_merge
+      - read_odk_export
+      - print.odk_structure
+
   - title: "Package overview"
     contents:
-      - odkmerge-package
+      - surveymerge-package
 
 articles:
   - title: Getting Started
@@ -37,5 +58,5 @@ navbar:
 
 news:
   releases:
-  - text: "Version 0.1.0"
-    href: https://github.com/kcham193/odkmerge/releases/tag/v0.1.0
+  - text: "Version 0.2.0"
+    href: https://github.com/kcham193/surveymerge/releases/tag/v0.2.0

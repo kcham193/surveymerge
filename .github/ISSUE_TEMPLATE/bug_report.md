@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Report a problem with odkmerge
+about: Report a problem with surveymerge
 title: ''
 labels: bug
 assignees: ''
@@ -16,7 +16,7 @@ Please provide a minimal, reproducible example using a small `.xlsx` file
 or one of the bundled fixtures in `inst/extdata/`.
 
 ```r
-library(odkmerge)
+library(surveymerge)
 # your code here
 ```
 

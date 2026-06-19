@@ -2,7 +2,7 @@
 % Please edit documentation in R/enrich_repeat.R
 \name{enrich_repeat}
 \alias{enrich_repeat}
-\title{Enrich a repeat sheet with columns from its parent sheet}
+\title{Enrich a repeat sheet with selected columns from its parent}
 \usage{
 enrich_repeat(
   sheets,
@@ -13,35 +13,52 @@ enrich_repeat(
 )
 }
 \arguments{
-\item{sheets}{A named list of tibbles as returned by \code{\link[=read_odk_export]{read_odk_export()}}.}
+\item{sheets}{A named list of tibbles as returned by
+\code{\link[=read_survey_export]{read_survey_export()}}.}
 
-\item{repeat_sheet_name}{A length-1 character string. The name of the repeat
-sheet to enrich. Must be a key in \code{sheets}.}
+\item{repeat_sheet_name}{A length-1 character string. The name of the
+repeat sheet to enrich. Must be a key in \code{sheets}.}
 
-\item{parent_cols}{A character vector of column names to bring across from
-the parent sheet. If \code{NULL} (the default), all non-internal columns are
-used (i.e. everything that does not start with \verb{_submission_}).}
+\item{parent_cols}{A character vector of column names to bring across
+from the parent sheet. If \code{NULL} (the default), all non-internal
+parent columns are used. Pass an explicit vector to keep the output
+compact and tied to your analysis variables.}
 
-\item{drop_internal}{Logical. If \code{TRUE} (the default), columns starting with
-\verb{_submission_} are removed from the repeat sheet before enrichment.}
+\item{drop_internal}{Logical. If \code{TRUE} (the default), columns starting
+with \verb{_submission_} are removed from the repeat sheet before
+enrichment.}
 
 \item{suffix}{A length-2 character vector of suffixes appended to
 disambiguate column names that exist in both sheets. Passed to
 \code{\link[dplyr:left_join]{dplyr::left_join()}}. Default: \code{c("_repeat", "_parent")}.}
 }
 \value{
-A tibble: the repeat sheet with parent columns added on the right.
-Row count is unchanged (left join).
+A tibble at the grain of the repeat sheet, with the requested parent
+columns added on the right. Row count is unchanged (left join).
 }
 \description{
-Adds selected columns from the parent sheet into a repeat (child) sheet,
-joining on the standard ODK index columns. The result is a self-contained
-tibble that can be analysed without needing to reference the parent sheet
-separately.
+Adds chosen parent-level columns onto a repeat (child) sheet by joining
+on the standard survey-export index columns. The result is a tibble at
+the \strong{grain of the repeat}, carrying just enough parent context to be
+self-contained for analysis at that grain.
+
+Use this when \code{\link[=build_master]{build_master()}} would carry across more parent columns
+than you need, or when you want a clear, intentional set of parent
+variables on each repeat row (rather than the full parent flattened in).
 }
+\section{What this means for analysis}{
+
+\code{enrich_repeat()} is the right tool when your unit of analysis is the
+repeat (e.g. one row per household member) but you need a small set of
+household-level covariates (e.g. \code{village}, \code{wealth_quintile}) on each
+row. Picking \code{parent_cols} deliberately keeps the dataset honest about
+which variables are parent-level (and therefore repeated identically
+across siblings) versus repeat-level.
+}
+
 \examples{
-path <- system.file("extdata", "simple_survey.xlsx", package = "odkmerge")
-sheets <- read_odk_export(path)
+path     <- system.file("extdata", "simple_survey.xlsx", package = "surveymerge")
+sheets   <- read_survey_export(path)
 enriched <- enrich_repeat(sheets, repeat_sheet_name = "species",
                            parent_cols = c("plot_id", "observer"))
 colnames(enriched)

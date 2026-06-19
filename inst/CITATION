@@ -1,14 +1,14 @@
-citHeader("To cite odkmerge in publications, please use:")
+citHeader("To cite surveymerge in publications, please use:")
 
 bibentry(
   bibtype = "Manual",
-  title   = "odkmerge: Merge and Flatten ODK and KoboToolbox Repeat-Group Exports",
+  title   = "surveymerge: Work with Relational Survey Exports and Repeat Groups",
   author  = person("Kasim", "Chambulilo"),
   year    = format(Sys.Date(), "%Y"),
   note    = sprintf("R package version %s", meta$Version),
-  url     = "https://github.com/kcham193/odkmerge",
+  url     = "https://github.com/kcham193/surveymerge",
   textVersion = sprintf(
-    "Chambulilo, K. (%s). odkmerge: Merge and Flatten ODK and KoboToolbox Repeat-Group Exports. R package version %s. https://github.com/kcham193/odkmerge",
+    "Chambulilo, K. (%s). surveymerge: Work with Relational Survey Exports and Repeat Groups. R package version %s. https://github.com/kcham193/surveymerge",
     format(Sys.Date(), "%Y"),
     meta$Version
   )

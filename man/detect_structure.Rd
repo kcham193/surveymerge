@@ -2,16 +2,16 @@
 % Please edit documentation in R/detect_structure.R
 \name{detect_structure}
 \alias{detect_structure}
-\title{Detect the parent-child sheet structure of an ODK export}
+\title{Detect the parent-child sheet structure of a survey export}
 \usage{
 detect_structure(sheets)
 }
 \arguments{
-\item{sheets}{A named list of tibbles as returned by \code{\link[=read_odk_export]{read_odk_export()}}.}
+\item{sheets}{A named list of tibbles as returned by \code{\link[=read_survey_export]{read_survey_export()}}.}
 }
 \value{
-An object of class \code{"odk_structure"} - a list with the following
-components:
+An object of class \code{c("survey_structure", "odk_structure")} - a list with
+the following components:
 \describe{
 \item{\code{parent_sheet}}{Character. Name of the root/parent sheet.}
 \item{\code{repeat_sheets}}{Character vector of repeat sheet names. Empty
@@ -24,16 +24,34 @@ column name.}
 \item{\code{parent_index_cols}}{Named list mapping every repeat sheet to its
 parent-index column name.}
 }
+
+The legacy \code{odk_structure} class is also attached so any user code that
+dispatched on objects from the previous package version keeps working.
 }
 \description{
-Inspects a named list of tibbles (as returned by \code{\link[=read_odk_export]{read_odk_export()}}) and
-identifies which sheets are parent (main) sheets and which are repeat-group
-sheets. Returns a structured object describing the hierarchy, which can be
-passed to \code{\link[=build_master]{build_master()}} or \code{\link[=enrich_repeat]{enrich_repeat()}}.
+Inspects a named list of tibbles (as returned by \code{\link[=read_survey_export]{read_survey_export()}})
+and identifies which sheets are parent sheets and which are repeat-group
+sheets, together with the hierarchy that links them.
+
+Use this before any merge: it tells you which \strong{units of analysis} are
+actually present in your export. A simple form yields one parent and one
+child level; a complex form can yield three or more levels (e.g. farm ->
+field -> observation), each of which is a legitimate unit of analysis in
+its own right.
 }
+\section{What this means for analysis}{
+
+Each entry in \code{repeat_sheets} corresponds to a candidate \strong{unit of
+analysis}. For example, in a household survey with a \code{members} repeat,
+"household-level" analysis lives in \code{parent_sheet}, while
+"individual-level" analysis lives in the \code{members} repeat (typically
+enriched with selected household columns, not the whole parent flattened
+in). \code{\link[=build_master]{build_master()}} and \code{\link[=enrich_repeat]{enrich_repeat()}} let you assemble either.
+}
+
 \examples{
-path <- system.file("extdata", "simple_survey.xlsx", package = "odkmerge")
-sheets <- read_odk_export(path)
+path      <- system.file("extdata", "simple_survey.xlsx", package = "surveymerge")
+sheets    <- read_survey_export(path)
 structure <- detect_structure(sheets)
 print(structure)
 

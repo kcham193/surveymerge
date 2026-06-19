@@ -1,5 +1,5 @@
 # data-raw/make_test_data.R
-# Generates synthetic .xlsx test fixtures for odkmerge package tests.
+# Generates synthetic .xlsx test fixtures for surveymerge package tests.
 # Run this script once to populate inst/extdata/.
 # Requires: openxlsx
 
@@ -25,7 +25,7 @@ rand_uuid <- function(n) {
 }
 
 # ---------------------------------------------------------------------------
-# 1. simple_survey.xlsx  (1 parent + 1 repeat)
+# 1. simple_survey.xlsx  (1 parent + 1 repeat) - KoboToolbox convention
 # ---------------------------------------------------------------------------
 
 survey <- data.frame(
@@ -167,10 +167,10 @@ message("nested_survey.xlsx written")
 
 
 # ---------------------------------------------------------------------------
-# 4. simple_survey_central.xlsx  (ODK Central format — KEY / PARENT_KEY)
+# 4. simple_survey_central.xlsx  (ODK Central format - KEY / PARENT_KEY)
 # ---------------------------------------------------------------------------
 # This mirrors `simple_survey.xlsx` (1 parent + 1 repeat) but uses the
-# ODK Central column convention so that `odkmerge` can be tested against
+# ODK Central column convention so that `surveymerge` can be tested against
 # real Central exports.
 set.seed(43)
 

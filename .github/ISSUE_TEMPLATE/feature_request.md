@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Suggest an idea for odkmerge
+about: Suggest an idea for surveymerge
 title: ''
 labels: enhancement
 assignees: ''

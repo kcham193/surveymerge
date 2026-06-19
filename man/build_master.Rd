@@ -2,7 +2,7 @@
 % Please edit documentation in R/build_master.R
 \name{build_master}
 \alias{build_master}
-\title{Build a flat master dataset from ODK repeat-group sheets}
+\title{Build analysis-ready datasets from repeat-group sheets}
 \usage{
 build_master(
   sheets,
@@ -13,43 +13,76 @@ build_master(
 )
 }
 \arguments{
-\item{sheets}{A named list of tibbles as returned by \code{\link[=read_odk_export]{read_odk_export()}}.}
+\item{sheets}{A named list of tibbles as returned by \code{\link[=read_survey_export]{read_survey_export()}}.}
 
-\item{structure}{Optional. An \code{odk_structure} object from
+\item{structure}{Optional. A \code{survey_structure} object from
 \code{\link[=detect_structure]{detect_structure()}}. If \code{NULL} (the default), \code{detect_structure()} is
 called internally.}
 
-\item{drop_internal}{Logical. If \code{TRUE} (the default), columns starting with
-\verb{_submission_} are removed from repeat sheets before joining.}
+\item{drop_internal}{Logical. If \code{TRUE} (the default), columns starting
+with \verb{_submission_} (KoboToolbox) and ODK Central's system columns
+(\code{SubmissionDate}, \code{SubmitterID}, etc.) are removed before joining.}
 
 \item{suffix}{A length-2 character vector of suffixes for column-name
 collisions. Default: \code{c("_repeat", "_parent")}.}
 
-\item{nest_sep}{A length-1 character string used as separator when renaming
-columns that originate from an intermediate (non-root) level during nested
-joins. Default: \code{"__"}.}
+\item{nest_sep}{A length-1 character string used as separator when
+renaming columns that originate from an intermediate (non-root) level
+during nested joins. Default: \code{"__"}.}
 }
 \value{
 \itemize{
-\item A single tibble when there is exactly one repeat sheet.
-\item A named list of tibbles when there are multiple repeat sheets.
+\item A single tibble when there is exactly one repeat sheet, at the grain
+of that repeat.
+\item A named list of tibbles when there are multiple repeat sheets, each
+at the grain of its own repeat.
 }
 }
 \description{
-Merges all repeat sheets with their parent sheet(s) to produce flat,
-analysis-ready tibbles. Handles three structural patterns automatically:
+For each repeat sheet in a survey export, \code{\link[=build_master]{build_master()}} walks up the
+parent chain and assembles a tibble at the \strong{grain of that repeat}, with
+all relevant ancestor columns joined in. The number of rows in each
+resulting tibble matches the number of rows in the underlying repeat
+sheet - so each output is already aligned to a specific unit of analysis.
+
+Three structural patterns are supported:
 \itemize{
-\item \strong{Simple} (one repeat sheet): returns a single tibble.
+\item \strong{Simple} (one repeat sheet): returns a single tibble at the grain of
+that repeat (e.g. one row per species observation, with plot-level
+columns attached).
 \item \strong{Multi-repeat} (multiple sibling repeat sheets): returns a named list
-of tibbles, one per repeat sheet.
-\item \strong{Nested repeats} (a repeat inside another repeat): recursively joins
-bottom-up and returns a single flat tibble per chain.
+of tibbles, one per repeat sheet. Sibling repeats live at \emph{different}
+grains (e.g. household members vs. household assets), so they are kept
+in separate tibbles rather than forced into one.
+\item \strong{Nested repeats} (a repeat inside another repeat): each leaf repeat
+is recursively joined up to the root parent, returning a flat tibble
+at the leaf grain that still contains grandparent columns.
 }
 }
+\section{What this means for analysis}{
+
+The output of \code{build_master()} is \strong{not} "the dataset" - it is a
+dataset \emph{per repeat grain}. Picking which one to use depends on your
+research question:
+\itemize{
+\item To analyse outcomes at the \strong{household} level, work from the parent
+sheet directly (\code{sheets[[structure$parent_sheet]]}), perhaps with
+\code{\link[=enrich_repeat]{enrich_repeat()}} aggregates joined in.
+\item To analyse outcomes at the \strong{individual / member} level, use the
+\code{members}-grain tibble from this function.
+\item To analyse outcomes at the \strong{visit} or \strong{observation} level, use
+the leaf-grain tibble from this function.
+}
+
+Stacking grains naively (e.g. concatenating member-level and
+household-level rows) inflates counts and distorts estimates. The
+separate tibbles are an intentional safeguard against that.
+}
+
 \examples{
-path <- system.file("extdata", "simple_survey.xlsx", package = "odkmerge")
-sheets <- read_odk_export(path)
+path   <- system.file("extdata", "simple_survey.xlsx", package = "surveymerge")
+sheets <- read_survey_export(path)
 master <- build_master(sheets)
-nrow(master)   # 40 (number of species rows)
+nrow(master)   # equals nrow(sheets$species): one row per species observation
 
 }

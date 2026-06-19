@@ -1,12 +1,12 @@
 # Code of Conduct
 
-The `odkmerge` project follows the
+The `surveymerge` project follows the
 [Contributor Covenant, version 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/),
 a community pledge for an open, welcoming, and respectful environment.
 
 ## Our standards
 
-Everyone interacting in `odkmerge` spaces — issues, pull requests, discussions,
+Everyone interacting in `surveymerge` spaces — issues, pull requests, discussions,
 email, and any other project channel — is expected to follow that pledge.
 
 ## Reporting

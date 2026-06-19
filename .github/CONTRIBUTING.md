@@ -1,6 +1,6 @@
-# Contributing to odkmerge
+# Contributing to surveymerge
 
-Thank you for your interest in contributing to `odkmerge`! This document
+Thank you for your interest in contributing to `surveymerge`! This document
 outlines how to propose a change.
 
 ## Fixing typos
@@ -21,7 +21,7 @@ issue and make sure someone from the team agrees that it is needed.
 ### Pull request process
 
 1. Fork the package and clone onto your computer. If you haven't done this
-   before, we recommend using `usethis::create_from_github("kcham193/odkmerge",
+   before, we recommend using `usethis::create_from_github("kcham193/surveymerge",
    fork = TRUE)`.
 2. Install all development dependencies with
    `devtools::install_dev_deps()`, then make sure the package passes
@@ -55,6 +55,6 @@ All PRs must pass `devtools::check()` with **0 errors, 0 warnings, and 0 notes**
 
 ## Code of Conduct
 
-Please note that the odkmerge project is released with a
+Please note that the surveymerge project is released with a
 [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By contributing to this
 project you agree to abide by its terms.

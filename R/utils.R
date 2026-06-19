@@ -30,17 +30,17 @@
 # Constants: known system column names for each format
 # ---------------------------------------------------------------------------
 #' @noRd
-.odk_index_candidates <- function() {
+.survey_index_candidates <- function() {
   c("_index", "KEY")
 }
 
 #' @noRd
-.odk_parent_index_candidates <- function() {
+.survey_parent_index_candidates <- function() {
   c("_parent_index", "PARENT_KEY")
 }
 
 #' @noRd
-.odk_parent_table_candidates <- function() {
+.survey_parent_table_candidates <- function() {
   # Kobo writes the parent sheet name into this column.
   # ODK Central does not have a direct equivalent; we infer parent linkage
   # from index values when this column is absent.
@@ -48,7 +48,7 @@
 }
 
 #' @noRd
-.odk_central_submission_cols <- function() {
+.central_submission_cols <- function() {
   # System columns added by ODK Central to the main (parent) sheet.
   c(
     "SubmissionDate", "SubmitterID", "SubmitterName",
@@ -59,14 +59,14 @@
 }
 
 # ---------------------------------------------------------------------------
-# .odk_index_col -- finds the row-identifier column
+# .survey_index_col -- finds the row-identifier column
 # ---------------------------------------------------------------------------
 #' @noRd
-.odk_index_col <- function(df) {
+.survey_index_col <- function(df) {
   nms <- colnames(df)
 
   # Exact match first (handles both conventions)
-  for (cand in .odk_index_candidates()) {
+  for (cand in .survey_index_candidates()) {
     if (cand %in% nms) return(cand)
   }
 
@@ -86,13 +86,13 @@
 }
 
 # ---------------------------------------------------------------------------
-# .odk_parent_index_col -- finds the parent-reference column in a repeat
+# .survey_parent_index_col -- finds the parent-reference column in a repeat
 # ---------------------------------------------------------------------------
 #' @noRd
-.odk_parent_index_col <- function(df) {
+.survey_parent_index_col <- function(df) {
   nms <- colnames(df)
 
-  for (cand in .odk_parent_index_candidates()) {
+  for (cand in .survey_parent_index_candidates()) {
     if (cand %in% nms) return(cand)
   }
 
@@ -105,12 +105,12 @@
 }
 
 # ---------------------------------------------------------------------------
-# .odk_parent_table_col -- optional column naming the parent sheet
+# .survey_parent_table_col -- optional column naming the parent sheet
 # ---------------------------------------------------------------------------
 #' @noRd
-.odk_parent_table_col <- function(df) {
+.survey_parent_table_col <- function(df) {
   nms <- colnames(df)
-  for (cand in .odk_parent_table_candidates()) {
+  for (cand in .survey_parent_table_candidates()) {
     if (cand %in% nms) return(cand)
   }
   NULL  # absence is not an error; caller handles NULL gracefully
@@ -121,7 +121,7 @@
 # ---------------------------------------------------------------------------
 #' @noRd
 .is_repeat_sheet <- function(df) {
-  any(.odk_parent_index_candidates() %in% colnames(df))
+  any(.survey_parent_index_candidates() %in% colnames(df))
 }
 
 # ---------------------------------------------------------------------------
@@ -150,7 +150,7 @@
   kobo_drop <- grep("^_submission_", nms, value = TRUE)
 
   # Central: explicit list of known system columns
-  central_drop <- intersect(.odk_central_submission_cols(), nms)
+  central_drop <- intersect(.central_submission_cols(), nms)
 
   drop <- unique(c(kobo_drop, central_drop))
   if (length(drop) == 0L) return(df)

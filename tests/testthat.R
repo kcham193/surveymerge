@@ -1,4 +1,4 @@
 library(testthat)
-library(odkmerge)
+library(surveymerge)
 
-test_check("odkmerge")
+test_check("surveymerge")

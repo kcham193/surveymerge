@@ -1,13 +1,15 @@
-Package: odkmerge
+Package: surveymerge
 Type: Package
-Title: Merge and Flatten ODK and KoboToolbox Repeat-Group Exports
-Version: 0.1.0.9000
+Title: Work with Relational Survey Exports and Repeat Groups
+Version: 0.2.0
 Authors@R: person("Kasim", "Chambulilo", email = "kassimchambulilo@gmail.com", role = c("aut", "cre"))
-Description: Provides tools to read, detect, enrich, and merge repeat-group
-    sheets produced by Open Data Kit (ODK) and KoboToolbox XLSForm exports.
-    Automates the joining of parent and child sheets using standard ODK index
-    columns, supports multi-level and nested repeat groups, and produces clean
-    flat datasets ready for analysis.
+Description: Tools for working with relational survey exports that contain
+    repeat groups and nested repeat groups, as produced by XLSForm-based
+    platforms such as ODK Central and KoboToolbox. Helps users inspect
+    parent-child sheet relationships, navigate nested repeat structures,
+    and assemble analysis-ready datasets at the appropriate unit of analysis
+    (household, individual, visit, event, etc.) rather than blindly
+    flattening every level into one table.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -26,7 +28,7 @@ Suggests:
     writexl
 VignetteBuilder: knitr
 Config/testthat/edition: 3
-URL: https://github.com/kcham193/odkmerge, https://kcham193.github.io/odkmerge/
-BugReports: https://github.com/kcham193/odkmerge/issues
+URL: https://github.com/kcham193/surveymerge, https://kcham193.github.io/surveymerge/
+BugReports: https://github.com/kcham193/surveymerge/issues
 Language: en-US
 Config/roxygen2/version: 8.0.0

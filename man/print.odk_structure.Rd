@@ -2,15 +2,19 @@
 % Please edit documentation in R/detect_structure.R
 \name{print.odk_structure}
 \alias{print.odk_structure}
-\title{Print an odk_structure object}
+\title{Print an odk_structure object (deprecated)}
 \usage{
 \method{print}{odk_structure}(x, ...)
 }
 \arguments{
-\item{x}{An \code{odk_structure} object returned by \code{\link[=detect_structure]{detect_structure()}}.}
+\item{x}{An \code{odk_structure} object.}
 
-\item{...}{Ignored.}
+\item{...}{Passed to \code{\link[=print.survey_structure]{print.survey_structure()}}.}
+}
+\value{
+The input object, invisibly.
 }
 \description{
-Print an odk_structure object
+Provided for backward compatibility with objects produced by the
+previous \code{odkmerge} release. Delegates to \code{\link[=print.survey_structure]{print.survey_structure()}}.
 }
